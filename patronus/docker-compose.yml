@@ -1,0 +1,35 @@
+version: "3.7"
+services:
+  db:
+      container_name: user-postgres
+      image: postgres
+      environment:
+        POSTGRES_USER: admin
+        POSTGRES_PASSWORD: 1234
+        POSTGRES_DB: patronus_core
+      ports:
+        - '5433:5432'
+  redis:
+    container_name: redis
+    image: redis
+    restart: always
+    command: redis-server --appendOnly yes
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_vol:/var/lib/redis/data
+  springapp:
+    container_name: springApp
+    build: .
+    ports:
+      - "8080:8080"
+    environment:
+          SPRING_DATASOURCE_URL: jdbc:postgresql://db:5433/patronus_core
+          SPRING_DATASOURCE_USERNAME: admin
+          SPRING_DATASOURCE_PASSWORD: 1234
+          DB_HOST: db
+    depends_on:
+      - db
+      - redis
+volumes:
+  redis_vol:

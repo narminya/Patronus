@@ -1,0 +1,14 @@
+spring:
+  application:
+    name: patronus
+  datasource:
+    password: ${DB_PASSWORD}
+    url: jdbc:postgresql://localhost:5433/patronus_core
+    username: postgres
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+    open-in-view: true
+
+
