@@ -1,35 +1,38 @@
-version: "3.7"
+version: "3.8"
 services:
   db:
-      container_name: user-postgres
-      image: postgres
-      environment:
-        POSTGRES_USER: admin
-        POSTGRES_PASSWORD: 1234
-        POSTGRES_DB: patronus_core
-      ports:
-        - '5433:5432'
-  redis:
-    container_name: redis
-    image: redis
-    restart: always
-    command: redis-server --appendOnly yes
+    container_name: postgres
+    image: postgres
+    environment:
+      POSTGRES_DB: patronus
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 1234
     ports:
-      - "6379:6379"
-    volumes:
-      - redis_vol:/var/lib/redis/data
+      - '5433:5432'
+  keycloak:
+   container_name: keycloak
+   image: quay.io/keycloak/keycloak:21.1.1
+   environment:
+    KEYCLOAK_ADMIN: admin
+    KEYCLOAK_ADMIN_PASSWORD: admin
+   ports:
+    - "9090:8080"
+   command:
+    - "start-dev"
   springapp:
-    container_name: springApp
+    container_name: patronus_app
     build: .
     ports:
       - "8080:8080"
     environment:
-          SPRING_DATASOURCE_URL: jdbc:postgresql://db:5433/patronus_core
-          SPRING_DATASOURCE_USERNAME: admin
-          SPRING_DATASOURCE_PASSWORD: 1234
-          DB_HOST: db
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5433/patronus
+      SPRING_DATASOURCE_USERNAME: admin
+      SPRING_DATASOURCE_PASSWORD: 1234
+      DB_HOST: db
     depends_on:
       - db
-      - redis
-volumes:
-  redis_vol:
+    command:
+      - start
+      - --auto-build
+#volumes:
+#  redis_vol:
