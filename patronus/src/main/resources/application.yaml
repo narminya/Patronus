@@ -5,6 +5,11 @@ spring:
     password: ${POSTGRES_PASSWORD}
     url: jdbc:postgresql://localhost:5433/patronus
     username: ${POSTGRES_USER}
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: https://keycloak.example.com/auth/realms/your-realm
   jpa:
     hibernate:
       ddl-auto: update

@@ -9,16 +9,22 @@ services:
       POSTGRES_PASSWORD: 1234
     ports:
       - '5433:5432'
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
   keycloak:
-   container_name: keycloak
-   image: quay.io/keycloak/keycloak:21.1.1
-   environment:
-    KEYCLOAK_ADMIN: admin
-    KEYCLOAK_ADMIN_PASSWORD: admin
-   ports:
-    - "9090:8080"
-   command:
-    - "start-dev"
+    container_name: keycloak
+    image: quay.io/keycloak/keycloak:21.1.1
+    environment:
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
+      KC_DB: postgres
+      KC_DB_URL: jdbc:postgresql://postgres/postgres
+      KC_DB_USERNAME: postgres
+      KC_DB_PASSWORD: 1234
+    ports:
+      - "9090:8080"
+    command:
+      - "start-dev"
   springapp:
     container_name: patronus_app
     build: .
@@ -34,5 +40,5 @@ services:
     command:
       - start
       - --auto-build
-#volumes:
-#  redis_vol:
+volumes:
+  postgres_data:
