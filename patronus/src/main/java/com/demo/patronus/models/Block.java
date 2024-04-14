@@ -17,16 +17,16 @@ import java.util.UUID;
 @AllArgsConstructor
 public class Block {
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id")
     private UUID id;
 
     @ManyToOne
-    @JoinColumn(name = "blocker_id")
+    @JoinColumn(name = "blocker_user_id")
     private User blocker;
 
     @ManyToOne
-    @JoinColumn(name = "blocked_id")
+    @JoinColumn(name = "blocked_user_id")
     private User blocked;
 
 

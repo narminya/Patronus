@@ -26,7 +26,7 @@ public class Comment {
 
     @ManyToOne
     @JoinColumn(name = "post_id")
-    private Stream post;
+    private LiveStream post;
 
     @Column(name = "content")
     private String content;

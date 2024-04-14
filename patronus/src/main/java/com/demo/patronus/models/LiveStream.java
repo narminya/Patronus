@@ -1,5 +1,6 @@
 package com.demo.patronus.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -17,9 +18,10 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "streams")
-public class Stream {
+public class LiveStream {
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
+    @GeneratedValue(strategy = GenerationType.AUTO)
+
     @Column(name = "id")
     private UUID id;
     private String caption;
@@ -32,12 +34,15 @@ public class Stream {
     private boolean chatEnabled;
     private boolean chatDelayed;
     private boolean chatFollowersOnly;
+    private boolean archived;
+
     @ManyToOne
-    @JoinColumn(name = "author_id")
-    private User author;
+    @JoinColumn(name = "user_id")
+    @JsonIgnore
+    private User user;
 
     @CreatedDate
-    private LocalDateTime createdAt;
+    private LocalDateTime createdAt = LocalDateTime.now();
 
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
@@ -50,4 +55,20 @@ public class Stream {
     public int getLikeCount() {
         return likes != null ? likes.size() : 0;
     }
+
+    @Override
+    public String toString() {
+        return "LiveStream{" +
+                "id=" + id +
+                ", caption='" + caption + '\'' +
+                ", thumbnailUrl='" + thumbnailUrl + '\'' +
+                ", live=" + live +
+                ", chatEnabled=" + chatEnabled +
+                ", chatDelayed=" + chatDelayed +
+                ", chatFollowersOnly=" + chatFollowersOnly +
+                ", createdAt=" + createdAt +
+                '}';
+    }
+
+
 }

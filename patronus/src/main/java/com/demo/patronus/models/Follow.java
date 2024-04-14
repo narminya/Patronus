@@ -19,7 +19,7 @@ import java.util.UUID;
 @Table(name = "follows")
 public class Follow {
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id")
     private UUID id;
 

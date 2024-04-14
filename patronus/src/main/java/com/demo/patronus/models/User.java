@@ -21,8 +21,7 @@ import java.util.UUID;
 @Table(name = "users")
 public class User {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "user_id")
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
 
     @Column(name = "username", unique = true)
@@ -38,27 +37,39 @@ public class User {
     @Email
     private String email;
 
-    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "follower", fetch = FetchType.LAZY)
     private List<Follow> following;
 
-    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "following", fetch = FetchType.LAZY)
     private List<Follow> followedBy;
 
-    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "blocker", fetch = FetchType.LAZY)
     private List<Block> blocking;
 
-    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "blocked", fetch = FetchType.LAZY)
     private List<Block> blockedBy;
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
-    private List<Stream> stream;
+    private List<LiveStream> liveStream;
 
     @CreatedDate
-    private LocalDateTime createdAt;
+    private LocalDateTime createdAt = LocalDateTime.now();
 
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", username='" + username + '\'' +
+                ", imageUrl='" + imageUrl + '\'' +
+                ", bio='" + bio + '\'' +
+                ", email='" + email + '\'' +
+                '}';
+    }
+
     @Column(name = "email_confirmed")
     private boolean emailConfirmed;
+
 }

@@ -27,7 +27,7 @@ public class Like {
 
     @ManyToOne
     @JoinColumn(name = "stream_id")
-    private Stream stream;
+    private LiveStream stream;
 
     @CreatedDate
     private LocalDateTime createdAt;

@@ -13,8 +13,8 @@
 //import java.util.Collection;
 //import java.util.Map;
 //import java.util.Set;
-//import java.util.stream.Collectors;
-//import java.util.stream.Stream;
+//import java.util.liveStream.Collectors;
+//import java.util.liveStream.LiveStream;
 //
 //@Component
 //public class JwtConverter implements Converter<Jwt, AbstractAuthenticationToken> {
@@ -29,9 +29,9 @@
 //
 //    @Override
 //    public AbstractAuthenticationToken convert(Jwt jwt) {
-//        Collection<GrantedAuthority> authorities = Stream.concat(
-//                jwtGrantedAuthoritiesConverter.convert(jwt).stream(),
-//                extractResourceRoles(jwt).stream()).collect(Collectors.toSet());
+//        Collection<GrantedAuthority> authorities = LiveStream.concat(
+//                jwtGrantedAuthoritiesConverter.convert(jwt).liveStream(),
+//                extractResourceRoles(jwt).liveStream()).collect(Collectors.toSet());
 //        return new JwtAuthenticationToken(jwt, authorities, getPrincipalClaimName(jwt));
 //    }
 //
@@ -53,7 +53,7 @@
 //                || (resourceRoles = (Collection<String>) resource.get("roles")) == null) {
 //            return Set.of();
 //        }
-//        return resourceRoles.stream()
+//        return resourceRoles.liveStream()
 //                .map(role -> new SimpleGrantedAuthority("ROLE_" + role))
 //                .collect(Collectors.toSet());
 //    }
