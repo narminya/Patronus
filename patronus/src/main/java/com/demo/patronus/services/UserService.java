@@ -16,6 +16,8 @@ public interface UserService {
     boolean isBlockedByUser(UUID userId, UUID blockedId);
     List<Block> getBlockedUsers(UUID  userId);
     List<Follow> getFollowedUsers(UUID  userId);
+    List<Follow> getFollowedByUsers(UUID  userId);
+
     Follow followUser(UUID userId, UUID followedId);
     Follow unfollowUser(UUID  userId, UUID followedId);
     boolean isFollowedByUser(UUID userId, UUID followedId);

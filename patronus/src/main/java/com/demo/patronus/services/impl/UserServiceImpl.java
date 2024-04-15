@@ -97,6 +97,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public List<Follow> getFollowedByUsers(UUID userId) {
+        return null;
+    }
+
+    @Override
     public Follow followUser(UUID userId, UUID followedId) {
         User self = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException("User not found"));

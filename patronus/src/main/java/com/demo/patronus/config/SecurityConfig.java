@@ -1,6 +1,4 @@
 //package com.demo.patronus.config;
-//
-//
 //import com.demo.patronus.security.JwtConverter;
 //import lombok.RequiredArgsConstructor;
 //import org.springframework.beans.factory.annotation.Value;
