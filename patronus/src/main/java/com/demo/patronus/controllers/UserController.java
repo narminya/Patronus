@@ -48,15 +48,15 @@ private final UserService userService;
 //        boolean isBlocked = userService.getFollowedUsers(userId, blockedId);
 //        return new ResponseEntity<>(isBlocked, HttpStatus.OK);
 //    }
-    @PostMapping("/{userId}/follow/{blockId}")
-    public ResponseEntity<Follow> followUser(@PathVariable UUID userId, @PathVariable UUID blockId) {
-        Follow followed = userService.followUser(userId, blockId);
+    @PostMapping("/{userId}/follow/{followId}")
+    public ResponseEntity<Follow> followUser(@PathVariable UUID userId, @PathVariable UUID followId) {
+        Follow followed = userService.followUser(userId, followId);
         return new ResponseEntity<>(followed, HttpStatus.OK);
     }
 
-    @PostMapping("/{userId}/unfollow/{blockId}")
-    public ResponseEntity<Follow> unfollowUser(@PathVariable UUID userId, @PathVariable UUID blockId) {
-        Follow followed = userService.unfollowUser(userId, blockId);
+    @PostMapping("/{userId}/unfollow/{followId}")
+    public ResponseEntity<Follow> unfollowUser(@PathVariable UUID userId, @PathVariable UUID followId) {
+        Follow followed = userService.unfollowUser(userId, followId);
         return new ResponseEntity<>(followed, HttpStatus.OK);
     }
 }
