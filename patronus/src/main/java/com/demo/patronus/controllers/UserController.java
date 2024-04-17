@@ -59,4 +59,15 @@ private final UserService userService;
         Follow followed = userService.unfollowUser(userId, followId);
         return new ResponseEntity<>(followed, HttpStatus.OK);
     }
+
+    @GetMapping("/{userId}/followedBy/{blockedId}")
+    public ResponseEntity<Boolean> isFollowedByUser(@PathVariable UUID userId, @PathVariable UUID blockedId) {
+        boolean isBlocked = userService.isBlockedByUser(userId, blockedId);
+        return new ResponseEntity<>(isBlocked, HttpStatus.OK);
+    }
+    @GetMapping("/{userId}/followedBy")
+    public ResponseEntity<List<Follow>> followedBy(@PathVariable UUID userId) {
+        List<Follow> followed = userService.getFollowedByUsers(userId);
+        return new ResponseEntity<>(followed, HttpStatus.OK);
+    }
 }

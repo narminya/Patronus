@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class StreamUpdateRequest {
+public class StreamPutRequest {
 
     @NotBlank
     @Schema(description = "The ID of the ingress point for streaming.")

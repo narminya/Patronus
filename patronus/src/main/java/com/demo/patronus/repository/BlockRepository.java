@@ -10,11 +10,8 @@ import java.util.List;
 import java.util.UUID;
 
 public interface BlockRepository extends JpaRepository<Block, UUID> {
-
     Block findByBlockerIdAndBlockedId(UUID blockerId, UUID blockedId);
-
     Block deleteByBlockerIdAndBlockedId(UUID blockerId, UUID blockedId);
-
     List<Block> findAllByBlockerId(UUID blockerId);
 
 }

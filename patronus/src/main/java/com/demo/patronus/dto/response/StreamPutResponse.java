@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class StreamUpdateResponse {
+public class StreamPutResponse {
     private String serverUrl;
     private String streamKey;
 }

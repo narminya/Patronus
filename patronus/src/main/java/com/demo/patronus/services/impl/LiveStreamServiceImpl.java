@@ -1,6 +1,6 @@
 package com.demo.patronus.services.impl;
 
-import com.demo.patronus.dto.request.StreamUpdateRequest;
+import com.demo.patronus.dto.request.StreamPutRequest;
 import com.demo.patronus.exception.StreamNotFoundException;
 import com.demo.patronus.models.LiveStream;
 import com.demo.patronus.repository.LiveStreamRepository;
@@ -24,7 +24,7 @@ public class LiveStreamServiceImpl implements LiveStreamService {
 
     @Override
     @Transactional
-    public LiveStream save(UUID id, StreamUpdateRequest liveStream) {
+    public LiveStream save(UUID id, StreamPutRequest liveStream) {
         LiveStream stream = repository.findById(id).orElseThrow();
         stream.setStreamKey(liveStream.getStreamKey());
         stream.setServerUrl(liveStream.getUrl());
@@ -34,8 +34,8 @@ public class LiveStreamServiceImpl implements LiveStreamService {
 
     @Override
     @Transactional
-    public void updateStream(UUID id, boolean status) {
-        LiveStream stream = repository.findById(id).orElseThrow();
+    public void updateStream(String id, boolean status) {
+        LiveStream stream = repository.findByIngressId(id).orElseThrow();
         stream.setLive(status);
         repository.save(stream);
     }

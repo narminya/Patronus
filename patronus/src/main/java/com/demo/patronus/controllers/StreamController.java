@@ -1,7 +1,7 @@
 package com.demo.patronus.controllers;
 
 import com.demo.patronus.dto.request.StreamCreateRequest;
-import com.demo.patronus.dto.request.StreamUpdateRequest;
+import com.demo.patronus.dto.request.StreamPutRequest;
 import com.demo.patronus.models.LiveStream;
 import com.demo.patronus.services.LiveStreamService;
 import org.springframework.http.HttpStatus;
@@ -50,15 +50,22 @@ public class StreamController {
 
     @PutMapping("/{streamId}")
     public ResponseEntity<LiveStream> updateStream(@PathVariable UUID streamId,
-                                                   @RequestBody StreamUpdateRequest request) {
+                                                   @RequestBody StreamPutRequest request) {
         LiveStream updatedStream = service.save(streamId, request);
         return ResponseEntity.ok(updatedStream);
     }
 
-    @PatchMapping("/{streamId}")
-    public ResponseEntity<Void> updateIngress(@PathVariable UUID streamId,
+    @PatchMapping("/{ingressId}")
+    public ResponseEntity<Void> updateIngress(@PathVariable String ingressId,
                                               @RequestParam Boolean status) {
-        service.updateStream(streamId, status);
+        service.updateStream(ingressId, status);
         return ResponseEntity.noContent().build();
     }
+
+//    @PatchMapping("/{streamId}")
+//    public ResponseEntity<Void> update(@PathVariable UUID streamId,
+//                                              @RequestBody Boolean status) {
+//        service.updateStream(streamId, status);
+//        return ResponseEntity.noContent().build();
+//    }
 }

@@ -18,4 +18,6 @@ public interface LiveStreamRepository extends JpaRepository<LiveStream, UUID> {
             "WHERE b.blocked_user_id != :userId OR b.blocked_user_id IS NULL", nativeQuery = true)
     List<LiveStream> findAll(@Param("userId") UUID userId);
 
+    Optional<LiveStream> findByIngressId(String ingressId);
+
 }
