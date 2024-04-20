@@ -1,5 +1,6 @@
 package com.demo.patronus.models;
 
+import com.demo.patronus.annotation.Password;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import lombok.AllArgsConstructor;
@@ -24,18 +25,21 @@ public class User {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
 
-    @Column(name = "username", unique = true)
+    @Column(unique = true)
     private String username;
 
-    private String imageUrl;
-
-    private String externalUserId;
-
-    private String bio;
-
-    @Column(name = "email", unique = true)
+    @Column(unique = true)
     @Email
     private String email;
+
+    @Column(name = "email_confirmed")
+    private boolean emailConfirmed=false;
+
+    @Password
+    private String password;
+    private String imageUrl;
+    private String bio;
+    private String name;
 
     @OneToMany(mappedBy = "follower", fetch = FetchType.LAZY)
     private List<Follow> following;
@@ -53,6 +57,7 @@ public class User {
     private List<LiveStream> liveStream;
 
     @CreatedDate
+    @Column(name = "created_at")
     private LocalDateTime createdAt = LocalDateTime.now();
 
     @Column(name = "updated_at")
@@ -69,7 +74,6 @@ public class User {
                 '}';
     }
 
-    @Column(name = "email_confirmed")
-    private boolean emailConfirmed;
+
 
 }

@@ -13,14 +13,13 @@ public interface UserService {
     User getUserById(UUID  userId);
     Block blockUser(UUID  userId, UUID blockedId);
     Block unBlockUser(UUID  userId,UUID blockedId);
-    boolean isBlockedByUser(UUID userId, UUID blockedId);
+    boolean blockedByUser(UUID userId, UUID blockedId);
     List<Block> getBlockedUsers(UUID  userId);
-    List<Follow> getFollowedUsers(UUID  userId);
-    List<Follow> getFollowedByUsers(UUID  userId);
-
+    List<Follow> getFollowedUsers(UUID userId);
+    List<Follow> getFollowedByUsers(UUID userId);
     Follow followUser(UUID userId, UUID followedId);
     Follow unfollowUser(UUID  userId, UUID followedId);
-    boolean isFollowedByUser(UUID userId, UUID followedId);
+    boolean followedByUser(UUID userId, UUID followedId);
 
 
 }

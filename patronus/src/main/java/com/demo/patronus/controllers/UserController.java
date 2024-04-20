@@ -3,6 +3,7 @@ package com.demo.patronus.controllers;
 
 import com.demo.patronus.models.Block;
 import com.demo.patronus.models.Follow;
+import com.demo.patronus.models.User;
 import com.demo.patronus.services.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -17,10 +18,11 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class UserController {
 private final UserService userService;
-    @GetMapping("/{userId}/blockedBy/{blockedId}")
-    public ResponseEntity<Boolean> isBlockedByUser(@PathVariable UUID userId, @PathVariable UUID blockedId) {
-        boolean isBlocked = userService.isBlockedByUser(userId, blockedId);
-        return new ResponseEntity<>(isBlocked, HttpStatus.OK);
+
+    @PostMapping("/{userId}")
+    public ResponseEntity<User> getUser(@PathVariable UUID userId) {
+        User user = userService.getUserById(userId);
+        return new ResponseEntity<>(user, HttpStatus.OK);
     }
     @PostMapping("/{userId}/blocked")
     public ResponseEntity<List<Block>> blockedUsers(@PathVariable UUID userId) {
@@ -37,17 +39,17 @@ private final UserService userService;
         Block blocked = userService.unBlockUser(userId, blockId);
         return new ResponseEntity<>(blocked, HttpStatus.OK);
     }
-
-    @GetMapping("/{userId}/followedBy/{blockedId}")
-    public ResponseEntity<Boolean> isFollowedByUser(@PathVariable UUID userId, @PathVariable UUID blockedId) {
-        boolean isBlocked = userService.isBlockedByUser(userId, blockedId);
+    @GetMapping("/{userId}/blockedBy/{blockedId}")
+    public ResponseEntity<Boolean> blockedByUser(@PathVariable UUID userId, @PathVariable UUID blockedId) {
+        boolean isBlocked = userService.blockedByUser(userId, blockedId);
         return new ResponseEntity<>(isBlocked, HttpStatus.OK);
     }
-//    @GetMapping("/{userId}/followedBy")
-//    public ResponseEntity<Boolean> followedBy(@PathVariable UUID userId) {
-//        boolean isBlocked = userService.getFollowedUsers(userId, blockedId);
-//        return new ResponseEntity<>(isBlocked, HttpStatus.OK);
-//    }
+    @GetMapping("/{userId}/followedBy/{followedId}")
+    public ResponseEntity<Boolean> isFollowedByUser(@PathVariable UUID userId, @PathVariable UUID followedId) {
+        boolean isBlocked = userService.blockedByUser(userId, followedId);
+        return new ResponseEntity<>(isBlocked, HttpStatus.OK);
+    }
+
     @PostMapping("/{userId}/follow/{followId}")
     public ResponseEntity<Follow> followUser(@PathVariable UUID userId, @PathVariable UUID followId) {
         Follow followed = userService.followUser(userId, followId);
@@ -58,12 +60,6 @@ private final UserService userService;
     public ResponseEntity<Follow> unfollowUser(@PathVariable UUID userId, @PathVariable UUID followId) {
         Follow followed = userService.unfollowUser(userId, followId);
         return new ResponseEntity<>(followed, HttpStatus.OK);
-    }
-
-    @GetMapping("/{userId}/followedBy/{blockedId}")
-    public ResponseEntity<Boolean> isFollowedByUser(@PathVariable UUID userId, @PathVariable UUID blockedId) {
-        boolean isBlocked = userService.isBlockedByUser(userId, blockedId);
-        return new ResponseEntity<>(isBlocked, HttpStatus.OK);
     }
     @GetMapping("/{userId}/followedBy")
     public ResponseEntity<List<Follow>> followedBy(@PathVariable UUID userId) {

@@ -74,7 +74,7 @@ public class UserServiceImpl implements UserService {
         }
     }
 
-    public boolean isBlockedByUser(UUID userId, UUID blockedId) {
+    public boolean blockedByUser(UUID userId, UUID blockedId) {
         try {
             if (userId.equals(blockedId)) {
                 return false;
@@ -131,7 +131,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public boolean isFollowedByUser(UUID userId, UUID followedId) {
+    public boolean followedByUser(UUID userId, UUID followedId) {
         try {
             if (userId.equals(followedId)) {
                 return false;
