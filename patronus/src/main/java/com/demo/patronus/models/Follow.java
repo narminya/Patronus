@@ -37,6 +37,12 @@ public class Follow {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-
-
+    @Override
+    public String toString() {
+        return "Follow{" +
+                "id=" + id +
+                ", createdAt=" + createdAt +
+                ", updatedAt=" + updatedAt +
+                '}';
+    }
 }

@@ -11,6 +11,7 @@ public interface UserService {
 
     User getUser(String username);
     User getUserById(UUID  userId);
+    User getUserByUsername(String username);
     Block blockUser(UUID  userId, UUID blockedId);
     Block unBlockUser(UUID  userId,UUID blockedId);
     boolean blockedByUser(UUID userId, UUID blockedId);

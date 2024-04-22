@@ -36,4 +36,12 @@ public class Block {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
+    @Override
+    public String toString() {
+        return "Block{" +
+                "id=" + id +
+                ", createdAt=" + createdAt +
+                ", updatedAt=" + updatedAt +
+                '}';
+    }
 }

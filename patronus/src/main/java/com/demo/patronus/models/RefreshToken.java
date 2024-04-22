@@ -1,13 +1,11 @@
 package com.demo.patronus.models;
-
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.CreatedDate;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.UUID;
 
 @Entity
@@ -15,21 +13,24 @@ import java.util.UUID;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "categories")
-public class Category {
-
+public class RefreshToken {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id")
     private UUID id;
 
-    @Column(name = "category_name")
-    private String name;
+    @ManyToOne
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    private User user;
 
-    @CreatedDate
-    private LocalDateTime createdAt;
+    @Column(nullable = false, unique = true,length = 1000)
+    private String token;
 
-    @Column(name = "updated_at")
-    private LocalDateTime updatedAt;
+    @Column(nullable = false)
+    private Instant expiryDate;
+
+    public boolean revoked;
+
+    public boolean expired;
 
 }

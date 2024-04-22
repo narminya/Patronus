@@ -36,6 +36,12 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public User getUserByUsername(String username) {
+        return userRepository.findByUsername(username)
+                .orElseThrow(() -> new UserNotFoundException("User not found"));
+    }
+
+    @Override
     public Block blockUser(UUID userId, UUID blockedId) {
         try {
             User self = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException("User not found"));

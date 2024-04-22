@@ -1,6 +1,7 @@
 package com.demo.patronus.repository;
 
 import com.demo.patronus.models.LiveStream;
+import com.demo.patronus.models.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -19,5 +20,15 @@ public interface LiveStreamRepository extends JpaRepository<LiveStream, UUID> {
     List<LiveStream> findAll(@Param("userId") UUID userId);
 
     Optional<LiveStream> findByIngressId(String ingressId);
+
+    @Query(value = "SELECT * FROM streams WHERE live = true AND user_id = :userId", nativeQuery = true)
+    Optional<LiveStream> findLiveByUserId(UUID userId);
+
+
+    Optional<LiveStream> findByUserIdAndId(UUID userId, UUID id);
+    Optional<LiveStream> findById(UUID id);
+
+    List<LiveStream> findAllByUserId(UUID userId);
+
 
 }
