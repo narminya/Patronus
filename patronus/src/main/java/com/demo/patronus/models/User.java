@@ -1,8 +1,11 @@
 package com.demo.patronus.models;
 
 import com.demo.patronus.annotation.Password;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -10,7 +13,9 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 
@@ -19,16 +24,23 @@ import java.util.UUID;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "users")
+@Table(name = "users", uniqueConstraints = {
+        @UniqueConstraint(columnNames = "username"),
+        @UniqueConstraint(columnNames = "email")
+})
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
 
     @Column(unique = true)
+    @NotBlank
+    @Size(max = 20)
     private String username;
 
     @Column(unique = true)
+    @NotBlank
+    @Size(max = 50)
     @Email
     private String email;
 
@@ -36,20 +48,34 @@ public class User {
     private boolean emailConfirmed=false;
 
     @Password
+    @NotBlank
+    @Size(max = 120)
     private String password;
     private String imageUrl;
     private String bio;
     private String name;
 
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(  name = "user_roles",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id"))
+    private Set<Role> roles = new HashSet<>();
+
+
+
+    @JsonIgnore
     @OneToMany(mappedBy = "follower", fetch = FetchType.LAZY)
     private List<Follow> following;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "following", fetch = FetchType.LAZY)
     private List<Follow> followedBy;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "blocker", fetch = FetchType.LAZY)
     private List<Block> blocking;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "blocked", fetch = FetchType.LAZY)
     private List<Block> blockedBy;
 
