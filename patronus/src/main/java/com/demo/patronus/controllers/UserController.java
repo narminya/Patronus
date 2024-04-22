@@ -1,7 +1,9 @@
 package com.demo.patronus.controllers;
 
 
+import com.demo.patronus.dto.response.FollowResponse;
 import com.demo.patronus.dto.response.UserResponse;
+import com.demo.patronus.mapper.FollowMapper;
 import com.demo.patronus.models.Block;
 import com.demo.patronus.models.Follow;
 import com.demo.patronus.models.User;
@@ -86,14 +88,16 @@ private final UserService userService;
         return new ResponseEntity<>(followed, HttpStatus.OK);
     }
     @GetMapping("/followedBy")
-    public ResponseEntity<List<Follow>> followedBy(@AuthenticationPrincipal CustomUserDetails currentUser) {
-        List<Follow> followed = userService.getFollowedByUsers(currentUser.getId());
-        return new ResponseEntity<>(followed, HttpStatus.OK);
+    public ResponseEntity<List<FollowResponse>> followedBy(@AuthenticationPrincipal CustomUserDetails currentUser) {
+        List<Follow> followed = userService.getFollowers(currentUser.getId());
+        List<FollowResponse> followResponses = FollowMapper.mapToFollowsResponse(followed);
+        return new ResponseEntity<>(followResponses, HttpStatus.OK);
     }
     @GetMapping("/followed")
-    public ResponseEntity<List<Follow>> followed(@AuthenticationPrincipal CustomUserDetails currentUser) {
-        List<Follow> followed = userService.getFollowedByUsers(currentUser.getId());
-        return new ResponseEntity<>(followed, HttpStatus.OK);
+    public ResponseEntity<List<FollowResponse>> followed(@AuthenticationPrincipal CustomUserDetails currentUser) {
+        List<Follow> followed = userService.getFollowedUsers(currentUser.getId());
+        List<FollowResponse> followResponses = FollowMapper.mapToFollowsResponse(followed);
+        return new ResponseEntity<>(followResponses, HttpStatus.OK);
     }
 
 }

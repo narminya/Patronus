@@ -103,8 +103,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<Follow> getFollowedByUsers(UUID userId) {
-        return null;
+    public List<Follow> getFollowers(UUID userId) {
+        return followRepository.findFollowByFollowingId(userId);
     }
 
     @Override

@@ -3,10 +3,8 @@ package com.demo.patronus.controllers;
 import com.demo.patronus.dto.request.StreamCreateRequest;
 import com.demo.patronus.dto.request.StreamPatchRequest;
 import com.demo.patronus.dto.request.StreamPutRequest;
-import com.demo.patronus.dto.request.StreamUpdateRequest;
 import com.demo.patronus.dto.response.StreamResponse;
 import com.demo.patronus.mapper.StreamMapper;
-import com.demo.patronus.models.Follow;
 import com.demo.patronus.models.LiveStream;
 import com.demo.patronus.models.User;
 import com.demo.patronus.security.CustomUserDetails;
@@ -51,10 +49,11 @@ public class StreamController {
     }
 
     @GetMapping("/filter")
-    public ResponseEntity<List<LiveStream>> getAllNonBlocked(@AuthenticationPrincipal CustomUserDetails currentUser
+    public ResponseEntity<List<StreamResponse>> getAllNonBlocked(@AuthenticationPrincipal CustomUserDetails currentUser
     ) {
         List<LiveStream> streams = service.getAllFiltered(currentUser.getId());
-        return ResponseEntity.ok(streams);
+        List<StreamResponse> streamResponses = StreamMapper.mapToStreamResponses(streams);
+        return ResponseEntity.ok(streamResponses);
     }
 
     @GetMapping
@@ -91,13 +90,13 @@ public class StreamController {
         return ResponseEntity.noContent().build();
     }
 
-    @PutMapping("/{streamId}/key")
-    public ResponseEntity<Void> updateStreamKey(@AuthenticationPrincipal CustomUserDetails currentUser,
-                                             @PathVariable UUID streamId,
-                                             @RequestParam StreamUpdateRequest request) {
-        service.updateStreamKey(streamId, request);
-        return ResponseEntity.noContent().build();
-    }
+//    @PutMapping("/{streamId}/key")
+//    public ResponseEntity<Void> updateStreamKey(@AuthenticationPrincipal CustomUserDetails currentUser,
+//                                             @PathVariable UUID streamId,
+//                                             @RequestParam StreamUpdateRequest request) {
+//        service.updateStreamKey(streamId, request);
+//        return ResponseEntity.noContent().build();
+//    }
 
     @PatchMapping("/{streamId}/details")
     public ResponseEntity<Void> updateStream(@AuthenticationPrincipal CustomUserDetails currentUser,
