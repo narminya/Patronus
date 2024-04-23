@@ -16,6 +16,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class LiveStreamServiceImpl implements LiveStreamService {
     private final StreamRepository repository;
+    private final CacheServiceImpl cacheService;
     @Override
     public LiveStream save(LiveStream liveStream) {
         return repository.save(liveStream);
@@ -27,9 +28,7 @@ public class LiveStreamServiceImpl implements LiveStreamService {
 
     @Override
     public void archiveStream(UUID streamId) {
-        LiveStream stream = repository.findById(streamId).orElseThrow();
-        stream.setArchived(true);
-        repository.save(stream);
+        repository.updateByStreamId(streamId);
     }
 
     @Override
@@ -47,6 +46,16 @@ public class LiveStreamServiceImpl implements LiveStreamService {
         return repository.findById(streamId)
                 .orElseThrow(() -> new StreamNotFoundException(streamId));
     }
+
+    @Override
+    public LiveStream endStream(UUID streamId) {
+        var live = repository.findById(streamId)
+                .orElseThrow(() -> new StreamNotFoundException(streamId));
+        live.setLive(false);
+        cacheService.removeStream(streamId);
+       return repository.save(live);
+    }
+
 
 
 }

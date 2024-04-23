@@ -70,6 +70,9 @@ public class CacheServiceImpl implements CacheService {
                 .filter(liveStream -> liveStream.getUserId().equals(userId))
                 .findFirst().orElseThrow(() -> new StreamNotFoundException(userId));
     }
-
+    @Override
+    public void removeStream(UUID streamId) {
+         redisRepository.deleteById(streamId);
+    }
 
 }

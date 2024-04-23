@@ -95,19 +95,11 @@ public class StreamController {
     @Operation(summary = "Ends livestream for currently authenticated user")
     @PostMapping("/end")
     public ResponseEntity<LiveStream> save(@AuthenticationPrincipal CustomUserDetails currentUser) {
-        User user = userService.getUser(currentUser.getUsername());
-        LiveStream savedStream = service.save(LiveStream.builder()
-                .thumbnailUrl(request.getThumbnailUrl())
-                .caption(request.getCaption())
-                .live(true)
-                .user(user)
-                .build());
-        cacheService.save(savedStream);
-        return ResponseEntity.status(HttpStatus.CREATED).body(savedStream);
+        return ResponseEntity.status(HttpStatus.CREATED).body(null);
     }
 
     @Operation(summary = "Updates streams ingress info")
-    @PutMapping("/{streamId}/ingress")
+    @PatchMapping("/{streamId}/ingress")
     public ResponseEntity<LiveStreamResponse> updateIngress(@AuthenticationPrincipal CustomUserDetails currentUser,
                                                    @PathVariable UUID streamId,
                                                    @RequestBody StreamPutRequest request) {
@@ -136,4 +128,6 @@ public class StreamController {
         service.archiveStream(streamId);
         return ResponseEntity.noContent().build();
     }
+
+
 }

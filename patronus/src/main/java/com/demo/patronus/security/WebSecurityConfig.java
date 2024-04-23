@@ -36,9 +36,11 @@ public class WebSecurityConfig {
                 .authorizeHttpRequests(authorizeHttpRequests -> authorizeHttpRequests
                         .requestMatchers(HttpMethod.POST, "/api/v1/").hasAnyAuthority("ADMIN", "USER")
                         .requestMatchers(HttpMethod.GET, "/api/users/me").hasAnyAuthority("ADMIN", "USER")
+
                         .requestMatchers("/api/v1/streams", "/api/streams/**").hasAuthority("ADMIN")
 //                        .requestMatchers("/api/users", "/api/users/**").hasAuthority(ADMIN)
                         .requestMatchers(HttpMethod.GET, "/api/v1/users/{username}").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/v1/users/{userId}/id").permitAll()
                         .requestMatchers("/public/**", "/api/v1/auth/**","/api/v1/auth/authenticate","/api/v1/auth/register", "/api/v1/auth/refresh-token").permitAll()
                         .requestMatchers("/", "/error", "/csrf", "/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs", "/v3/api-docs/**").permitAll()
                         .anyRequest().authenticated())

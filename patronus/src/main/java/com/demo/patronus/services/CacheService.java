@@ -12,7 +12,7 @@ public interface CacheService {
    StreamHash save(UUID id, StreamPutRequest liveStream);
    StreamHash updateStreamInfo(UUID id, StreamPatchRequest status);
    StreamHash updateIngressInfo(UUID id, StreamPutRequest status);
-
    StreamHash getLiveByUserId(UUID userId);
+   void removeStream(UUID streamId);
 
 }

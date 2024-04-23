@@ -13,8 +13,6 @@ import org.springframework.web.multipart.MultipartFile;
 @RequiredArgsConstructor
 @Slf4j
 public class StorageController {
-
-
     private final StorageService service;
 
     @PostMapping("/upload")

@@ -48,6 +48,17 @@ private final UserService userService;
                 .name(user.getName()).build();
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
+    @GetMapping("/{userId}/id")
+    public ResponseEntity<UserResponse> getUser(@PathVariable UUID userId) {
+        User user = userService.getUserById(userId);
+
+        UserResponse response = UserResponse.builder()
+                .id(user.getId())
+                .username(user.getUsername())
+                .imageUrl(user.getImageUrl())
+                .name(user.getName()).build();
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
 
 
     @PostMapping("/blocked")

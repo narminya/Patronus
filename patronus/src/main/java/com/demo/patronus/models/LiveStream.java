@@ -7,7 +7,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.elasticsearch.annotations.Document;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -19,7 +18,6 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "streams")
-@Document(indexName = "streams", createIndex = false)
 public class LiveStream {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

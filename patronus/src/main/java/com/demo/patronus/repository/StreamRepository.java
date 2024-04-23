@@ -28,5 +28,8 @@ public interface StreamRepository extends JpaRepository<LiveStream, UUID> {
 
     Page<LiveStream> findAllByUserId(UUID userId, Pageable pageable);
 
+    @Query(value = "UPDATE streams SET archive = false WHERE id = :id AND live is false", nativeQuery = true)
+    LiveStream updateByStreamId(UUID id);
+
 
 }
