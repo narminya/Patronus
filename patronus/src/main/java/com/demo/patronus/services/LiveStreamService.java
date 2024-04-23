@@ -4,6 +4,8 @@ import com.demo.patronus.dto.request.StreamPatchRequest;
 import com.demo.patronus.dto.request.StreamPutRequest;
 import com.demo.patronus.dto.request.StreamUpdateRequest;
 import com.demo.patronus.models.LiveStream;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 import java.util.UUID;
@@ -11,15 +13,9 @@ import java.util.UUID;
 public interface LiveStreamService {
 
     LiveStream save(LiveStream liveStream);
-    LiveStream getLiveByUserId(UUID userId);
-    List<LiveStream> getStreams(UUID userId);
-    LiveStream getByUserId(UUID userId, UUID streamId);
+    Page<LiveStream> getStreams(UUID userId, Pageable pageable);
     LiveStream getByStreamId( UUID streamId);
-    LiveStream save(UUID id, StreamPutRequest liveStream);
-    void updateStreamStatus(String id, boolean status);
-    void updateStreamInfo(UUID id, StreamPatchRequest status);
-    void updateStreamKey(UUID id, StreamUpdateRequest status);
-    List<LiveStream> getAllFiltered(UUID userId);
-    List<LiveStream> getAll();
+    Page<LiveStream> getAllFiltered(UUID userId, Pageable pageable);
+    Page<LiveStream> listAllStreamsByPage(Pageable pageable);
     void archiveStream(UUID streamId);
 }

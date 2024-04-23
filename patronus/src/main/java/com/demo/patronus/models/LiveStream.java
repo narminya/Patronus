@@ -7,6 +7,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.elasticsearch.annotations.Document;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -18,6 +19,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "streams")
+@Document(indexName = "streams", createIndex = false)
 public class LiveStream {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -25,16 +27,10 @@ public class LiveStream {
     @Column(name = "id")
     private UUID id;
     private String caption;
+    private String description;
     private String thumbnailUrl;
-    private String ingressId;
-    private String serverUrl;
-    private String streamKey;
-    //cache??
-    private boolean live;
-    private boolean chatEnabled;
-    private boolean chatDelayed;
-    private boolean chatFollowersOnly;
     private boolean archived;
+    private boolean live=true;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
@@ -51,6 +47,10 @@ public class LiveStream {
     @OneToMany(mappedBy = "stream")
     private List<Like> likes;
 
+    @ManyToOne
+    @JoinColumn(name = "category_id")
+    private Category category;
+
 
     public int getLikeCount() {
         return likes != null ? likes.size() : 0;
@@ -62,10 +62,6 @@ public class LiveStream {
                 "id=" + id +
                 ", caption='" + caption + '\'' +
                 ", thumbnailUrl='" + thumbnailUrl + '\'' +
-                ", live=" + live +
-                ", chatEnabled=" + chatEnabled +
-                ", chatDelayed=" + chatDelayed +
-                ", chatFollowersOnly=" + chatFollowersOnly +
                 ", createdAt=" + createdAt +
                 '}';
     }

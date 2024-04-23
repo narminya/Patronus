@@ -3,14 +3,23 @@ package com.demo.patronus.controllers;
 import com.demo.patronus.dto.request.StreamCreateRequest;
 import com.demo.patronus.dto.request.StreamPatchRequest;
 import com.demo.patronus.dto.request.StreamPutRequest;
+import com.demo.patronus.dto.request.StreamUpdateRequest;
+import com.demo.patronus.dto.response.LiveStreamResponse;
 import com.demo.patronus.dto.response.StreamResponse;
 import com.demo.patronus.mapper.StreamMapper;
 import com.demo.patronus.models.LiveStream;
 import com.demo.patronus.models.User;
+import com.demo.patronus.models.redis.StreamHash;
 import com.demo.patronus.security.CustomUserDetails;
+import com.demo.patronus.services.CacheService;
 import com.demo.patronus.services.LiveStreamService;
 import com.demo.patronus.services.UserService;
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
+import org.springdoc.core.annotations.ParameterObject;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -25,44 +34,50 @@ import java.util.UUID;
 public class StreamController {
 
     private final LiveStreamService service;
+    private final CacheService cacheService;
     private final UserService userService;
 
-    @GetMapping("/all")
-    public ResponseEntity<List<StreamResponse>> getAllUsersStreams(@AuthenticationPrincipal CustomUserDetails currentUser) {
-        List<LiveStream> stream = service.getStreams(currentUser.getId());
-        List<StreamResponse> streamResponse = StreamMapper.mapToStreamResponses(stream);
+    @Operation(summary = "Get all finished streams")
+    @GetMapping("/all/pageable")
+    public Page<StreamResponse> getStreams(@ParameterObject Pageable pageable) {
+        Page<LiveStream> liveStreamPage = service.listAllStreamsByPage(pageable);
+        return liveStreamPage.map(StreamMapper::mapToStreamResponse);
+    }
+
+    @Operation(summary = "Get all finished streams of currently authenticated user")
+    @GetMapping("/all/user")
+    public ResponseEntity<List<StreamResponse>> getAllUsersStreams(@AuthenticationPrincipal CustomUserDetails currentUser,
+                                                                   @ParameterObject Pageable pageable) {
+        Page<LiveStream> stream = service.getStreams(currentUser.getId(), pageable);
+        List<StreamResponse> streamResponse = StreamMapper.mapToStreamResponses(stream.getContent());
         return ResponseEntity.ok(streamResponse);
     }
 
-
+    @Operation(summary = "Get finished stream by id")
     @GetMapping("/{streamId}")
-    public ResponseEntity<LiveStream> getByStreamId(UUID streamId) {
+    public ResponseEntity<LiveStream> getByStreamId(@PathVariable UUID streamId) {
         LiveStream stream = service.getByStreamId(streamId);
         return ResponseEntity.ok(stream);
     }
 
+    @Operation(summary = "Get live stream of currently authenticated user")
     @GetMapping("/live")
-    public ResponseEntity<StreamResponse> getLiveById(@AuthenticationPrincipal CustomUserDetails currentUser) {
-        LiveStream stream = service.getLiveByUserId(currentUser.getId());
-        StreamResponse streamResponse = StreamMapper.mapToStreamResponse(stream);
+    public ResponseEntity<LiveStreamResponse> getLive(@AuthenticationPrincipal CustomUserDetails currentUser) {
+        StreamHash stream = cacheService.getLiveByUserId(currentUser.getId());
+        LiveStreamResponse streamResponse = StreamMapper.mapToLiveStreamResponse(stream);
         return ResponseEntity.ok(streamResponse);
     }
 
+    @Operation(summary = "Gets all streams of non blocked by current user")
     @GetMapping("/filter")
-    public ResponseEntity<List<StreamResponse>> getAllNonBlocked(@AuthenticationPrincipal CustomUserDetails currentUser
-    ) {
-        List<LiveStream> streams = service.getAllFiltered(currentUser.getId());
-        List<StreamResponse> streamResponses = StreamMapper.mapToStreamResponses(streams);
-        return ResponseEntity.ok(streamResponses);
+    public ResponseEntity<Page<LiveStream>> getAllNonBlocked(@AuthenticationPrincipal CustomUserDetails currentUser,
+                                                             @RequestParam(defaultValue = "0") int page,
+                                                             @RequestParam(defaultValue = "10") int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<LiveStream> streams = service.getAllFiltered(currentUser.getId(), pageable);
+        return ResponseEntity.ok(streams);
     }
-
-    @GetMapping
-    public ResponseEntity<List<StreamResponse>> getAll() {
-        List<LiveStream> streams = service.getAll();
-        List<StreamResponse> streamResponses = StreamMapper.mapToStreamResponses(streams);
-        return ResponseEntity.ok(streamResponses);
-    }
-
+    @Operation(summary = "Creates new stream for currently authenticated user")
     @PostMapping
     public ResponseEntity<LiveStream> save(@AuthenticationPrincipal CustomUserDetails currentUser,
                                            @RequestBody StreamCreateRequest request) {
@@ -70,44 +85,38 @@ public class StreamController {
         LiveStream savedStream = service.save(LiveStream.builder()
                 .thumbnailUrl(request.getThumbnailUrl())
                 .caption(request.getCaption())
+                .live(true)
                 .user(user)
                 .build());
+        cacheService.save(savedStream);
         return ResponseEntity.status(HttpStatus.CREATED).body(savedStream);
     }
 
-    @PutMapping("/{streamId}")
-    public ResponseEntity<LiveStream> updateStream(@AuthenticationPrincipal CustomUserDetails currentUser,
+    @Operation(summary = "Updates streams ingress info")
+    @PutMapping("/{streamId}/ingress")
+    public ResponseEntity<LiveStreamResponse> updateIngress(@AuthenticationPrincipal CustomUserDetails currentUser,
                                                    @PathVariable UUID streamId,
                                                    @RequestBody StreamPutRequest request) {
-        LiveStream updatedStream = service.save(streamId, request);
-        return ResponseEntity.ok(updatedStream);
+
+        StreamHash stream = cacheService.updateIngressInfo(streamId, request);
+        LiveStreamResponse streamResponse = StreamMapper.mapToLiveStreamResponse(stream);
+        return ResponseEntity.ok(streamResponse);
     }
 
-    @PatchMapping("/{ingressId}/ingress")
-    public ResponseEntity<Void> updateIngress(@PathVariable String ingressId,
-                                              @RequestParam Boolean status) {
-        service.updateStreamStatus(ingressId, status);
-        return ResponseEntity.noContent().build();
-    }
 
-//    @PutMapping("/{streamId}/key")
-//    public ResponseEntity<Void> updateStreamKey(@AuthenticationPrincipal CustomUserDetails currentUser,
-//                                             @PathVariable UUID streamId,
-//                                             @RequestParam StreamUpdateRequest request) {
-//        service.updateStreamKey(streamId, request);
-//        return ResponseEntity.noContent().build();
-//    }
 
-    @PatchMapping("/{streamId}/details")
+    @Operation(summary = "Updates chat details and thumbnail of stream")
+    @PutMapping("/{streamId}/details")
     public ResponseEntity<Void> updateStream(@AuthenticationPrincipal CustomUserDetails currentUser,
                                              @PathVariable UUID streamId,
                                              @RequestParam StreamPatchRequest request) {
-        service.updateStreamInfo(streamId, request);
+        cacheService.updateStreamInfo(streamId, request);
         return ResponseEntity.noContent().build();
     }
 
 
-    @GetMapping("/{streamId}/archive")
+    @Operation(summary = "User archives stream")
+    @PostMapping("/{streamId}/archive")
     public ResponseEntity<Void> archive(@AuthenticationPrincipal CustomUserDetails currentUser,
                                         @PathVariable UUID streamId) {
         service.archiveStream(streamId);

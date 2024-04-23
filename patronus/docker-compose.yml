@@ -12,13 +12,27 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
   elasticsearch:
-    image: elasticsearch:8.8.0
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.10.4
+    container_name: elasticsearch
+    restart: unless-stopped
     ports:
-      - 9200:9200
-      - 9300:9300
+      - "9200:9200"
+      - "9300:9300"
     environment:
-      - discovery.type=single-node
-      - xpack.security.enabled=false
+      discovery.type: single-node
+      xpack.security.enabled: false
+      ES_JAVA_OPTS: "-Xms512m -Xmx512m"
+    healthcheck:
+      test: "curl -f http://localhost:9200 || exit 1"
+  redis:
+    container_name: redis
+    image: redis
+    restart: always
+    command: redis-server --appendOnly yes
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_vol:/var/lib/redis/data
   springapp:
     container_name: patronus_app
     build: .
@@ -31,8 +45,10 @@ services:
       DB_HOST: db
     depends_on:
       - db
+      - redis
     command:
       - start
       - --auto-build
 volumes:
   postgres_data:
+  redis_vol:

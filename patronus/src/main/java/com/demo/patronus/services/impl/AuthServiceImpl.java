@@ -3,8 +3,11 @@ package com.demo.patronus.services.impl;
 import com.demo.patronus.dto.request.AuthRequest;
 import com.demo.patronus.dto.request.RegisterRequest;
 import com.demo.patronus.dto.response.AuthResponse;
+import com.demo.patronus.enums.ERole;
 import com.demo.patronus.models.RefreshToken;
+import com.demo.patronus.models.Role;
 import com.demo.patronus.models.User;
+import com.demo.patronus.repository.RoleRepository;
 import com.demo.patronus.repository.TokenRepository;
 import com.demo.patronus.repository.UserRepository;
 import com.demo.patronus.security.TokenProvider;
@@ -36,6 +39,7 @@ public class AuthServiceImpl implements AuthService {
     private final TokenProvider tokenProvider;
     private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
+    private final RoleRepository roleRepository;
     private final UserDetailsServiceImpl userDetailsService;
     private final TokenRepository tokenRepository;
     private final AuthenticationManager authenticationManager;
@@ -71,7 +75,14 @@ public class AuthServiceImpl implements AuthService {
         user.setPassword(passwordEncoder.encode(signUpRequest.getPassword()));
         user.setName(signUpRequest.getName());
         user.setEmail(signUpRequest.getEmail());
-//        user.setRole(WebSecurityConfig.USER);
+
+        Optional<Role> optionalRole = roleRepository.findByName(ERole.valueOf("ADMIN"));
+
+        if (optionalRole.isPresent()) {
+            user.getRoles().add(optionalRole.get());
+        } else {
+            throw new IllegalArgumentException("Role not found");
+        }
         return user;
     }
     @Override
