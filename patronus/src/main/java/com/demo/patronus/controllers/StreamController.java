@@ -3,7 +3,6 @@ package com.demo.patronus.controllers;
 import com.demo.patronus.dto.request.StreamCreateRequest;
 import com.demo.patronus.dto.request.StreamPatchRequest;
 import com.demo.patronus.dto.request.StreamPutRequest;
-import com.demo.patronus.dto.request.StreamUpdateRequest;
 import com.demo.patronus.dto.response.LiveStreamResponse;
 import com.demo.patronus.dto.response.StreamResponse;
 import com.demo.patronus.mapper.StreamMapper;
@@ -53,7 +52,7 @@ public class StreamController {
         return ResponseEntity.ok(streamResponse);
     }
 
-    @Operation(summary = "Get finished stream by id")
+    @Operation(summary = "Get stream by id")
     @GetMapping("/{streamId}")
     public ResponseEntity<LiveStream> getByStreamId(@PathVariable UUID streamId) {
         LiveStream stream = service.getByStreamId(streamId);
@@ -77,10 +76,25 @@ public class StreamController {
         Page<LiveStream> streams = service.getAllFiltered(currentUser.getId(), pageable);
         return ResponseEntity.ok(streams);
     }
+
     @Operation(summary = "Creates new stream for currently authenticated user")
     @PostMapping
     public ResponseEntity<LiveStream> save(@AuthenticationPrincipal CustomUserDetails currentUser,
                                            @RequestBody StreamCreateRequest request) {
+        User user = userService.getUser(currentUser.getUsername());
+        LiveStream savedStream = service.save(LiveStream.builder()
+                .thumbnailUrl(request.getThumbnailUrl())
+                .caption(request.getCaption())
+                .live(true)
+                .user(user)
+                .build());
+        cacheService.save(savedStream);
+        return ResponseEntity.status(HttpStatus.CREATED).body(savedStream);
+    }
+
+    @Operation(summary = "Ends livestream for currently authenticated user")
+    @PostMapping("/end")
+    public ResponseEntity<LiveStream> save(@AuthenticationPrincipal CustomUserDetails currentUser) {
         User user = userService.getUser(currentUser.getUsername());
         LiveStream savedStream = service.save(LiveStream.builder()
                 .thumbnailUrl(request.getThumbnailUrl())

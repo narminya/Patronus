@@ -51,7 +51,6 @@ public class LiveStream {
     @JoinColumn(name = "category_id")
     private Category category;
 
-
     public int getLikeCount() {
         return likes != null ? likes.size() : 0;
     }

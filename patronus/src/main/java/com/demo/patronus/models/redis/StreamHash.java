@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.redis.core.RedisHash;
+import org.springframework.data.redis.core.index.Indexed;
 
 import java.util.UUID;
 
@@ -17,7 +18,7 @@ import java.util.UUID;
 public class StreamHash {
     @Id
     private UUID id;
-
+    @Indexed
     private UUID userId;
     private String caption;
     private String description;

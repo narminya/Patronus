@@ -1,29 +1,21 @@
 package com.demo.patronus.services.impl;
 
-import com.demo.patronus.dto.request.StreamPatchRequest;
-import com.demo.patronus.dto.request.StreamPutRequest;
-import com.demo.patronus.dto.request.StreamUpdateRequest;
 import com.demo.patronus.exception.StreamNotFoundException;
 import com.demo.patronus.models.LiveStream;
-import com.demo.patronus.models.redis.StreamHash;
-import com.demo.patronus.repository.LiveStreamRepository;
-import com.demo.patronus.repository.RedisRepository;
+import com.demo.patronus.repository.StreamRepository;
 import com.demo.patronus.services.LiveStreamService;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
-import java.util.List;
 import java.util.UUID;
 
 
 @Service
 @RequiredArgsConstructor
 public class LiveStreamServiceImpl implements LiveStreamService {
-    private final LiveStreamRepository repository;
+    private final StreamRepository repository;
     @Override
     public LiveStream save(LiveStream liveStream) {
         return repository.save(liveStream);

@@ -10,6 +10,7 @@ import com.demo.patronus.services.CacheService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.UUID;
 
 @RequiredArgsConstructor
@@ -63,8 +64,11 @@ public class CacheServiceImpl implements CacheService {
 
     @Override
     public StreamHash getLiveByUserId(UUID userId) {
-        return redisRepository.findByUserId(userId)
-                .orElseThrow(() -> new StreamNotFoundException(userId));
+//findByUserId returns not found
+        List<StreamHash> allLive = (List<StreamHash>) redisRepository.findAll();
+        return allLive.stream()
+                .filter(liveStream -> liveStream.getUserId().equals(userId))
+                .findFirst().orElseThrow(() -> new StreamNotFoundException(userId));
     }
 
 
