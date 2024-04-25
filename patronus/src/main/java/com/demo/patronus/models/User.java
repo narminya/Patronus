@@ -1,6 +1,7 @@
 package com.demo.patronus.models;
 
 import com.demo.patronus.annotation.Password;
+import com.demo.patronus.security.oauth.OAuth2Provider;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
@@ -62,6 +63,10 @@ public class User {
     private Set<Role> roles = new HashSet<>();
 
 
+    @Enumerated(EnumType.STRING)
+    private OAuth2Provider provider;
+
+    private String providerId;
 
     @JsonIgnore
     @OneToMany(mappedBy = "follower", fetch = FetchType.LAZY)

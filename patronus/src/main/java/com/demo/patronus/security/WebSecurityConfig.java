@@ -1,5 +1,7 @@
 package com.demo.patronus.security;
 
+import com.demo.patronus.security.oauth.CustomAuthenticationSuccessHandler;
+import com.demo.patronus.security.oauth.CustomOAuth2UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -24,7 +26,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class WebSecurityConfig {
 
     private final TokenAuthenticationFilter tokenAuthenticationFilter;
-
+    private final CustomOAuth2UserService customOauth2UserService;
+    private final CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler;
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
         return authenticationConfiguration.getAuthenticationManager();
@@ -36,14 +39,19 @@ public class WebSecurityConfig {
                 .authorizeHttpRequests(authorizeHttpRequests -> authorizeHttpRequests
                         .requestMatchers(HttpMethod.POST, "/api/v1/").hasAnyAuthority("ADMIN", "USER")
                         .requestMatchers(HttpMethod.GET, "/api/users/me").hasAnyAuthority("ADMIN", "USER")
-
                         .requestMatchers("/api/v1/streams", "/api/streams/**").hasAuthority("ADMIN")
-//                        .requestMatchers("/api/users", "/api/users/**").hasAuthority(ADMIN)
                         .requestMatchers(HttpMethod.GET, "/api/v1/users/{username}").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/v1/users/{userId}/id").permitAll()
                         .requestMatchers("/public/**", "/api/v1/auth/**","/api/v1/auth/authenticate","/api/v1/auth/register", "/api/v1/auth/refresh-token").permitAll()
                         .requestMatchers("/", "/error", "/csrf", "/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs", "/v3/api-docs/**").permitAll()
                         .anyRequest().authenticated())
+                        .oauth2Login(oauth ->
+                        oauth
+                                .userInfoEndpoint(u ->
+                                        u.userService(customOauth2UserService)
+                                )
+                                .successHandler(customAuthenticationSuccessHandler)
+                        )
                 .addFilterBefore(tokenAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .exceptionHandling(exceptionHandling -> exceptionHandling.authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED)))
                 .sessionManagement(sessionManagement -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
@@ -52,11 +60,16 @@ public class WebSecurityConfig {
                 .build();
     }
 
+
+
+
+
+
+
+
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
-//    public static final String ADMIN = "ADMIN";
-//    public static final String USER = "USER";
 }
