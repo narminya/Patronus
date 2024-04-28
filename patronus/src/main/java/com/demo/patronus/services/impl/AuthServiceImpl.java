@@ -21,6 +21,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -33,6 +35,8 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class AuthServiceImpl implements AuthService {
 
+    @Value("${app.jwtExpirationMs}")
+    private Long jwtExpirationMs;
     @Value("${app.jwtRefreshExpirationMs}")
     private Long jwtRefreshExpirationMs;
 
@@ -40,7 +44,6 @@ public class AuthServiceImpl implements AuthService {
     private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
-    private final UserDetailsServiceImpl userDetailsService;
     private final TokenRepository tokenRepository;
     private final AuthenticationManager authenticationManager;
 
@@ -48,8 +51,8 @@ public class AuthServiceImpl implements AuthService {
     public AuthResponse register(RegisterRequest request) {
 
         var savedUser = userRepository.save(mapSignUpRequestToUser(request));
-        var jwtToken = tokenProvider.generateToken(request.getUsername(), request.getPassword());
-        var refreshToken = tokenProvider.generateRefreshToken(request.getUsername(), request.getPassword());
+        var jwtToken = generateToken(request.getUsername(), request.getPassword());
+        var refreshToken = generateRefreshToken(request.getUsername(), request.getPassword());
         saveUserToken(savedUser, jwtToken);
         return AuthResponse.builder()
                 .accessToken(jwtToken)
@@ -60,8 +63,8 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public AuthResponse authenticate(AuthRequest request) {
 
-        var jwtToken = tokenProvider.generateToken(request.getUsername(), request.getPassword());
-        var refreshToken = tokenProvider.generateRefreshToken(request.getUsername(), request.getPassword());
+        var jwtToken = generateToken(request.getUsername(), request.getPassword());
+        var refreshToken = generateRefreshToken(request.getUsername(), request.getPassword());
 
         AuthResponse response = new AuthResponse();
         response.setAccessToken(jwtToken);
@@ -107,7 +110,7 @@ public class AuthServiceImpl implements AuthService {
         if (!passwordEncoder.matches(encodedPassword, user.getPassword())) {
             throw new BadCredentialsException("Invalid password");
         }
-                var accessToken = tokenProvider.generateToken(userUsername, user.getPassword());
+                var accessToken = generateToken(userUsername, user.getPassword());
                 revokeUsersTokens(user);
                 var authResponse = AuthResponse.builder()
                         .accessToken(accessToken)
@@ -157,5 +160,24 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public boolean hasUserWithEmail(String email) {
         return userRepository.existsByEmail(email);
+    }
+
+    public String generateToken(
+            String username, String password
+    ) {
+
+        Authentication authentication = authenticationManager
+                .authenticate(new UsernamePasswordAuthenticationToken(username, password));
+        return tokenProvider.generate(authentication);
+    }
+
+
+    public String generateRefreshToken(
+            String username, String password
+    ) {
+
+        Authentication authentication = authenticationManager
+                .authenticate(new UsernamePasswordAuthenticationToken(username, password));
+        return tokenProvider.generate(authentication);
     }
 }

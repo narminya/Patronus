@@ -1,12 +1,7 @@
 package com.demo.patronus.security;
 
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.Jws;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.MalformedJwtException;
-import io.jsonwebtoken.UnsupportedJwtException;
+import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SignatureException;
 import lombok.RequiredArgsConstructor;
@@ -16,11 +11,13 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import java.time.ZonedDateTime;
-import java.util.*;
+import java.util.Date;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -32,11 +29,7 @@ public class TokenProvider {
     private String jwtSecret;
     @Value("${app.jwtExpirationMs}")
     private Long jwtExpirationMs;
-    @Value("${app.jwtRefreshExpirationMs}")
-    private Long jwtRefreshExpirationMs;
-
-    private final AuthenticationManager authenticationManager;
-    public String generate(Authentication authentication, Long jwtExpirationSS) {
+    public String generate(Authentication authentication) {
         CustomUserDetails user = (CustomUserDetails) authentication.getPrincipal();
 
         List<String> roles = user.getAuthorities()
@@ -50,7 +43,7 @@ public class TokenProvider {
                 .header().add("type", TOKEN_TYPE)
                 .and()
                 .signWith(Keys.hmacShaKeyFor(signingKey), Jwts.SIG.HS512)
-                .expiration(Date.from(ZonedDateTime.now().plusMinutes(jwtExpirationSS).toInstant()))
+                .expiration(Date.from(ZonedDateTime.now().plusMinutes(jwtExpirationMs).toInstant()))
                 .issuedAt(Date.from(ZonedDateTime.now().toInstant()))
                 .id(UUID.randomUUID().toString())
                 .issuer(TOKEN_ISSUER)
@@ -88,25 +81,6 @@ public class TokenProvider {
         return Optional.empty();
     }
 
-
-    public String generateToken(
-            String username, String password
-    ) {
-
-        Authentication authentication = authenticationManager
-                .authenticate(new UsernamePasswordAuthenticationToken(username, password));
-        return generate(authentication, jwtExpirationMs);
-    }
-
-
-    public String generateRefreshToken(
-            String username, String password
-    ) {
-
-        Authentication authentication = authenticationManager
-                .authenticate(new UsernamePasswordAuthenticationToken(username, password));
-        return generate(authentication, jwtRefreshExpirationMs);
-    }
 
     public static final String TOKEN_TYPE = "JWT";
     public static final String TOKEN_ISSUER = "patronus-api";

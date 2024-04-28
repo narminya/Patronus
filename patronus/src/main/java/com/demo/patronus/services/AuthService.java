@@ -11,16 +11,11 @@ import java.io.IOException;
 
 public interface AuthService {
     AuthResponse register(RegisterRequest request);
-
     AuthResponse authenticate(AuthRequest request);
-
     void refreshToken(HttpServletRequest request, HttpServletResponse response) throws IOException;
-
     void revokeUsersTokens(User user);
-
-
     boolean hasUserWithUsername(String username);
-
-
     boolean hasUserWithEmail(String email);
+
+
 }

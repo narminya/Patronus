@@ -11,6 +11,7 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -24,19 +25,19 @@ import java.io.IOException;
 import java.util.Optional;
 
 @Slf4j
-@RequiredArgsConstructor
 @Component
+@RequiredArgsConstructor
 public class TokenAuthenticationFilter extends OncePerRequestFilter {
 
     private final UserDetailsService userDetailsService;
+    private final TokenProvider tokenProvider;
 
-    @Value("${app.jwt.secret}")
-    private String jwtSecret;
+
     @Override
     protected void doFilterInternal(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull FilterChain chain) throws ServletException, IOException {
         try {
             getJwtFromRequest(request)
-                    .flatMap(this::validateTokenAndGetJws)
+                    .flatMap(tokenProvider::validateTokenAndGetJws)
                     .ifPresent(jws -> {
                         String username = jws.getPayload().getSubject();
                         UserDetails userDetails = userDetailsService.loadUserByUsername(username);
@@ -58,29 +59,7 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
         }
         return Optional.empty();
     }
-    public Optional<Jws<Claims>> validateTokenAndGetJws(String token) {
-        try {
-            byte[] signingKey = jwtSecret.getBytes();
 
-            Jws<Claims> jws = Jwts.parser()
-                    .verifyWith(Keys.hmacShaKeyFor(signingKey))
-                    .build()
-                    .parseSignedClaims(token);
-
-            return Optional.of(jws);
-        } catch (ExpiredJwtException exception) {
-            log.error("Request to parse expired JWT : {} failed : {}", token, exception.getMessage());
-        } catch (UnsupportedJwtException exception) {
-            log.error("Request to parse unsupported JWT : {} failed : {}", token, exception.getMessage());
-        } catch (MalformedJwtException exception) {
-            log.error("Request to parse invalid JWT : {} failed : {}", token, exception.getMessage());
-        } catch (SignatureException exception) {
-            log.error("Request to parse JWT with invalid signature : {} failed : {}", token, exception.getMessage());
-        } catch (IllegalArgumentException exception) {
-            log.error("Request to parse empty or null JWT : {} failed : {}", token, exception.getMessage());
-        }
-        return Optional.empty();
-    }
 
     public static final String TOKEN_HEADER = "Authorization";
     public static final String TOKEN_PREFIX = "Bearer ";
