@@ -1,5 +1,9 @@
 package com.demo.patronus.runner;
 
+import com.demo.patronus.enums.ERole;
+import com.demo.patronus.models.Role;
+import com.demo.patronus.models.User;
+import com.demo.patronus.repository.RoleRepository;
 import com.demo.patronus.services.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -7,33 +11,30 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
+import java.util.Arrays;
+import java.util.List;
+
 @Slf4j
 @RequiredArgsConstructor
 @Component
 public class DatabaseInitializer implements CommandLineRunner {
 
-    private final UserService userService;
-    private final PasswordEncoder passwordEncoder;
-
+  private final RoleRepository roleRepository;
     @Override
-    public void run(String... args) throws Exception {
-
+    public void run(String... args) {
+        if (!roleRepository.findAll().isEmpty()) {
+            return;
+        }
+        roleRepository.saveAll(ROLES);
+        log.info("Database initialized");
     }
-//
-//    @Override
-//    public void run(String... args) {
-//        if (!userService.getUsers().isEmpty()) {
-//            return;
-//        }
-//        USERS.forEach(user -> {
-//            user.setPassword(passwordEncoder.encode(user.getPassword()));
-//            userService.(user);
-//        });
-//        log.info("Database initialized");
-//    }
-//
-//    private static final List<User> USERS = Arrays.asList(
-//            new User("admin", "admin", "Admin", "admin@mycompany.com", WebSecurityConfig.ADMIN),
-//            new User("user", "user", "User", "user@mycompany.com", WebSecurityConfig.USER)
-//    );
+
+    private static final List<Role> ROLES = Arrays.asList(
+            Role.builder().name(ERole.valueOf("USER")).build(),
+            Role.builder().name(ERole.valueOf("ADMIN")).build()
+    );
+
+    private static final List<User> USERS = Arrays.asList(
+            User.builder().build()
+    );
 }

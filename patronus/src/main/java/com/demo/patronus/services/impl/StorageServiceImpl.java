@@ -19,7 +19,7 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public class StorageServiceImpl implements StorageService {
 
-    @Value("${application.bucket.name}")
+    @Value("${aws.s3.bucketName}")
     private String bucketName;
 
     private final AmazonS3 s3Client;

@@ -15,7 +15,6 @@ import java.util.Optional;
 @NoArgsConstructor
 public class StreamPatchRequest {
 
-    private String thumbnailUrl;
     private String name;
     private Boolean chatEnabled;
     private Boolean chatFollowersOnly;

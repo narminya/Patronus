@@ -18,6 +18,7 @@
 		<springdoc-openapi.version>2.3.0</springdoc-openapi.version>
 		<org.mapstruct.version>1.5.5.Final</org.mapstruct.version>
 		<jjwt.version>0.12.3</jjwt.version>
+		<docker-image.prefix>patronus</docker-image.prefix>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -27,6 +28,10 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-actuator</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-validation</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -112,6 +117,7 @@
 			<version>${jjwt.version}</version>
 			<scope>runtime</scope>
 		</dependency>
+
 	</dependencies>
 
 	<build>
@@ -125,6 +131,7 @@
 							<groupId>org.projectlombok</groupId>
 							<artifactId>lombok</artifactId>
 						</exclude>
+
 					</excludes>
 				</configuration>
 			</plugin>

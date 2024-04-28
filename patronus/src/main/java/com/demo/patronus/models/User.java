@@ -33,24 +33,10 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
-
-    @Column(unique = true)
-    @NotBlank
-    @Size(max = 20)
     private String username;
-
-    @Column(unique = true)
-    @NotBlank
-    @Size(max = 50)
-    @Email
     private String email;
-
     @Column(name = "email_confirmed")
     private boolean emailConfirmed=false;
-
-    @Password
-    @NotBlank
-    @Size(max = 120)
     private String password;
     private String imageUrl;
     private String bio;

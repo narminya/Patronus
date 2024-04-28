@@ -8,6 +8,8 @@ import com.demo.patronus.models.redis.StreamHash;
 import com.demo.patronus.repository.RedisRepository;
 import com.demo.patronus.services.CacheService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -25,8 +27,12 @@ public class CacheServiceImpl implements CacheService {
                 .caption(liveStream.getCaption())
                 .description(liveStream.getDescription())
                 .userId(liveStream.getUser().getId())
+                .username(liveStream.getUser().getUsername())
+                .fullName(liveStream.getUser().getName())
                 .build();
-        redisRepository.findByUserId(liveStream.getUser().getId()).ifPresent(redisRepository::delete);
+
+        redisRepository.findByUserId(liveStream.getUser().getId())
+                .ifPresent(redisRepository::delete);
         redisRepository.save(streamHash);
         return streamHash;
     }
@@ -39,6 +45,11 @@ public class CacheServiceImpl implements CacheService {
         stream.setServerUrl(liveStream.getUrl());
         stream.setIngressId(liveStream.getIngressId());
         return redisRepository.save(stream);
+    }
+
+    @Override
+    public List<StreamHash> getAllLiveStreams() {
+        return (List<StreamHash>)redisRepository.findAll();
     }
 
 
@@ -64,11 +75,7 @@ public class CacheServiceImpl implements CacheService {
 
     @Override
     public StreamHash getLiveByUserId(UUID userId) {
-//findByUserId returns not found
-        List<StreamHash> allLive = (List<StreamHash>) redisRepository.findAll();
-        return allLive.stream()
-                .filter(liveStream -> liveStream.getUserId().equals(userId))
-                .findFirst().orElseThrow(() -> new StreamNotFoundException(userId));
+         return redisRepository.findByUserId(userId).orElseThrow();
     }
     @Override
     public void removeStream(UUID streamId) {

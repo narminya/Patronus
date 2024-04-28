@@ -7,6 +7,7 @@ import com.demo.patronus.exception.DuplicatedUserInfoException;
 import com.demo.patronus.services.AuthService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -24,7 +25,7 @@ public class AuthController {
     private final AuthService service;
     @PostMapping("/register")
     public ResponseEntity<AuthResponse> register(
-            @RequestBody RegisterRequest request
+            @Valid @RequestBody RegisterRequest request
     ) {
 
         if (service.hasUserWithUsername(request.getUsername())) {
@@ -38,7 +39,7 @@ public class AuthController {
     }
     @PostMapping("/authenticate")
     public ResponseEntity<AuthResponse> authenticate(
-            @RequestBody AuthRequest request
+            @Valid   @RequestBody AuthRequest request
     ) {
         return ResponseEntity.ok(service.authenticate(request));
     }

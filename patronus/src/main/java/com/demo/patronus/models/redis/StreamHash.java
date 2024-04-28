@@ -20,6 +20,8 @@ public class StreamHash {
     private UUID id;
     @Indexed
     private UUID userId;
+    private String username;
+    private String fullName;
     private String caption;
     private String description;
     private String thumbnailUrl;

@@ -38,7 +38,10 @@ public class StreamMapper {
                 hash.getStreamKey(),
                 hash.isChatDelayed(),
                 hash.isChatEnabled(),
-                hash.isChatFollowersOnly()
+                hash.isChatFollowersOnly(),
+                hash.getUserId().toString(),
+                hash.getUsername(),
+                hash.getFullName()
         );
     }
 

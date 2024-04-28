@@ -3,12 +3,14 @@ package com.demo.patronus.services.impl;
 import com.demo.patronus.exception.StreamNotFoundException;
 import com.demo.patronus.models.LiveStream;
 import com.demo.patronus.repository.StreamRepository;
+import com.demo.patronus.services.CacheService;
 import com.demo.patronus.services.LiveStreamService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.UUID;
 
 
@@ -16,7 +18,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class LiveStreamServiceImpl implements LiveStreamService {
     private final StreamRepository repository;
-    private final CacheServiceImpl cacheService;
+    private final CacheService cacheService;
     @Override
     public LiveStream save(LiveStream liveStream) {
         return repository.save(liveStream);
@@ -27,8 +29,8 @@ public class LiveStreamServiceImpl implements LiveStreamService {
     }
 
     @Override
-    public void archiveStream(UUID streamId) {
-        repository.updateByStreamId(streamId);
+    public void archiveStream(UUID streamId, UUID userId) {
+        repository.updateByStreamIdAndUserId(streamId,userId);
     }
 
     @Override
@@ -55,6 +57,7 @@ public class LiveStreamServiceImpl implements LiveStreamService {
         cacheService.removeStream(streamId);
        return repository.save(live);
     }
+
 
 
 
