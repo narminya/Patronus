@@ -17,14 +17,13 @@ import java.util.UUID;
 @RedisHash
 public class StreamHash {
     @Id
-    private UUID id;
+    private UUID streamId;
     @Indexed
     private UUID userId;
     private String username;
     private String fullName;
     private String caption;
     private String description;
-    private String thumbnailUrl;
     private String ingressId;
     private String serverUrl;
     private String streamKey;

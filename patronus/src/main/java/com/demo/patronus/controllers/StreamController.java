@@ -117,24 +117,22 @@ public class StreamController {
     }
 
     @Operation(summary = "Updates streams ingress info")
-    @PatchMapping("/{streamId}/ingress")
+    @PutMapping("/ingress")
     public ResponseEntity<LiveStreamResponse> updateIngress(@AuthenticationPrincipal CustomUserDetails currentUser,
-                                                   @PathVariable UUID streamId,
                                                             @Valid @RequestBody StreamPutRequest request) {
 
-        StreamHash stream = cacheService.updateIngressInfo(streamId, request);
+        StreamHash stream = cacheService.updateIngressInfo(currentUser.getId(), request);
         LiveStreamResponse streamResponse = StreamMapper.mapToLiveStreamResponse(stream);
         return ResponseEntity.ok(streamResponse);
     }
 
 
 
-    @Operation(summary = "Updates chat details and thumbnail of stream")
-    @PutMapping("/{streamId}/details")
+    @Operation(summary = "Updates chat details of stream")
+    @PutMapping("/chat")
     public ResponseEntity<LiveStreamResponse> updateStream(@AuthenticationPrincipal CustomUserDetails currentUser,
-                                             @PathVariable UUID streamId,
                                                            @Valid @RequestBody StreamPatchRequest request) {
-        var stream = cacheService.updateStreamInfo(streamId, request);
+        var stream = cacheService.updateStreamInfo(currentUser.getId(), request);
         LiveStreamResponse streamResponse = StreamMapper.mapToLiveStreamResponse(stream);
         return ResponseEntity.ok(streamResponse);
     }
@@ -147,14 +145,10 @@ public class StreamController {
         service.archiveStream(streamId,currentUser.getId());
         return ResponseEntity.noContent().build();
     }
-
+    @Operation(summary = "Uploads thumbnail for stream")
     @PostMapping(value = "/{streamId}/thumbnail", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public String upload(@PathVariable UUID streamId, @RequestParam("thumbnail") MultipartFile poster) {
-//        log.info("Upload poster with imdb {}", imdb);
-//        Movie movie = movieService.validateAndGetMovie(imdb);
-//        String uploadedFile = posterService.uploadFile(poster);
-//        movie.setPoster(uploadedFile);
-//        movieService.saveMovie(movie);
-//        return uploadedFile;
+    public ResponseEntity<Void> upload(@PathVariable UUID streamId, @RequestParam("thumbnail") MultipartFile thumbnail) {
+        service.uploadThumbnail(streamId, thumbnail);
+        return ResponseEntity.noContent().build();
     }
 }

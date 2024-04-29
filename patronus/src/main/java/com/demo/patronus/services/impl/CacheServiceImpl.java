@@ -23,7 +23,7 @@ public class CacheServiceImpl implements CacheService {
     @Override
     public StreamHash save(LiveStream liveStream) {
         var streamHash = StreamHash.builder()
-                .id(liveStream.getId())
+                .streamId(liveStream.getId())
                 .caption(liveStream.getCaption())
                 .description(liveStream.getDescription())
                 .userId(liveStream.getUser().getId())
@@ -55,8 +55,7 @@ public class CacheServiceImpl implements CacheService {
 
     @Override
     public StreamHash updateStreamInfo(UUID id, StreamPatchRequest status) {
-        StreamHash stream = redisRepository.findById(id).orElseThrow();
-        stream.setThumbnailUrl(status.getThumbnailUrl());
+        StreamHash stream = redisRepository.findByUserId(id).orElseThrow();
         stream.setChatDelayed(status.getChatDelayed());
         stream.setChatEnabled(status.getChatEnabled());
         stream.setChatFollowersOnly(status.getChatFollowersOnly());
@@ -65,7 +64,7 @@ public class CacheServiceImpl implements CacheService {
 
     @Override
     public StreamHash updateIngressInfo(UUID id, StreamPutRequest status) {
-        StreamHash stream = redisRepository.findById(id).orElseThrow();
+        StreamHash stream = redisRepository.findByUserId(id).orElseThrow();
         stream.setIngressId(status.getIngressId());
         stream.setStreamKey(status.getStreamKey());
         stream.setServerUrl(status.getUrl());
@@ -80,6 +79,11 @@ public class CacheServiceImpl implements CacheService {
     @Override
     public void removeStream(UUID streamId) {
          redisRepository.deleteById(streamId);
+    }
+
+    @Override
+    public StreamHash getById(UUID streamId) {
+        return redisRepository.findById(streamId).orElseThrow();
     }
 
 }

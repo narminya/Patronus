@@ -5,10 +5,12 @@ import com.demo.patronus.models.LiveStream;
 import com.demo.patronus.repository.StreamRepository;
 import com.demo.patronus.services.CacheService;
 import com.demo.patronus.services.LiveStreamService;
+import com.demo.patronus.services.StorageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.UUID;
@@ -19,6 +21,8 @@ import java.util.UUID;
 public class LiveStreamServiceImpl implements LiveStreamService {
     private final StreamRepository repository;
     private final CacheService cacheService;
+    private final StorageService storageService;
+
     @Override
     public LiveStream save(LiveStream liveStream) {
         return repository.save(liveStream);
@@ -30,12 +34,12 @@ public class LiveStreamServiceImpl implements LiveStreamService {
 
     @Override
     public void archiveStream(UUID streamId, UUID userId) {
-        repository.updateByStreamIdAndUserId(streamId,userId);
+        repository.updateByStreamIdAndUserId(streamId, userId);
     }
 
     @Override
-    public Page<LiveStream> getStreams(UUID userId,Pageable pageable) {
-        return repository.findAllByUserId(userId,pageable);
+    public Page<LiveStream> getStreams(UUID userId, Pageable pageable) {
+        return repository.findAllByUserId(userId, pageable);
     }
 
     @Override
@@ -55,10 +59,17 @@ public class LiveStreamServiceImpl implements LiveStreamService {
                 .orElseThrow(() -> new StreamNotFoundException(streamId));
         live.setLive(false);
         cacheService.removeStream(streamId);
-       return repository.save(live);
+        return repository.save(live);
     }
 
-
+    @Override
+    public String uploadThumbnail(UUID streamId, MultipartFile poster) {
+        LiveStream stream = repository.findById(streamId).orElseThrow();
+        String uploadedFile = storageService.uploadFile(poster);
+        stream.setThumbnailUrl(uploadedFile);
+        repository.save(stream);
+        return uploadedFile;
+    }
 
 
 }

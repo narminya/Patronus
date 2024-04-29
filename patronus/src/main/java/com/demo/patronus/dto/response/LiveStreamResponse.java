@@ -6,7 +6,7 @@ import java.time.LocalDateTime;
 
 
 
-public record LiveStreamResponse(String id, String caption, String thumbnailUrl,
+public record LiveStreamResponse(String id, String caption,
                                  String ingressId,
                                  String serverUrl, String streamKey, Boolean chatDelayed, Boolean chatEnabled,
                                  Boolean chatFollowersOnly, String userId, String username, String name) {

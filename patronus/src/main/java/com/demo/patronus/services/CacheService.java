@@ -18,5 +18,5 @@ public interface CacheService {
    StreamHash updateIngressInfo(UUID id, StreamPutRequest status);
    StreamHash getLiveByUserId(UUID userId);
    void removeStream(UUID streamId);
-
+   StreamHash getById(UUID streamId);
 }

@@ -30,9 +30,8 @@ public class StreamMapper {
 
     public static LiveStreamResponse mapToLiveStreamResponse(StreamHash hash) {
         return new LiveStreamResponse(
-                hash.getId().toString(),
+                hash.getStreamId().toString(),
                 hash.getCaption(),
-                hash.getThumbnailUrl(),
                 hash.getIngressId(),
                 hash.getServerUrl(),
                 hash.getStreamKey(),
