@@ -50,16 +50,20 @@ public class StreamController {
     @GetMapping("/all/live")
     public List<LiveStreamResponse> getLiveStreams() {
         List<StreamHash> liveStreamPage = cacheService.getAllLiveStreams();
-        return liveStreamPage.stream().map(StreamMapper::mapToLiveStreamResponse)
+        return liveStreamPage.stream()
+                .map(streamMapper::mapToLiveStreamResponse)
                 .collect(Collectors.toList());
     }
     @Operation(summary = "Get all streams of currently authenticated user")
     @GetMapping("/all/user")
     public ResponseEntity<List<StreamResponse>> getAllUsersStreams(@AuthenticationPrincipal CustomUserDetails currentUser,
                                                                    @ParameterObject Pageable pageable) {
-        Page<LiveStream> stream = service.getStreams(currentUser.getId(), pageable);
-        List<StreamResponse> streamResponse = StreamMapper.mapToStreamResponses(stream.getContent());
-        return ResponseEntity.ok(streamResponse);
+        Page<LiveStream> streamPage = service.getStreams(currentUser.getId(), pageable);
+        List<StreamResponse> streamResponses = streamPage.getContent()
+                .stream()
+                .map(streamMapper::mapToStreamResponse)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(streamResponses);
     }
 
     @Operation(summary = "Get stream by id")
@@ -73,14 +77,14 @@ public class StreamController {
     @GetMapping("/live")
     public ResponseEntity<LiveStreamResponse> getLive(@AuthenticationPrincipal CustomUserDetails currentUser) {
         StreamHash stream = cacheService.getLiveByUserId(currentUser.getId());
-        LiveStreamResponse streamResponse = StreamMapper.mapToLiveStreamResponse(stream);
+        LiveStreamResponse streamResponse = streamMapper.mapToLiveStreamResponse(stream);
         return ResponseEntity.ok(streamResponse);
     }
     @Operation(summary = "Get live stream of any user")
     @GetMapping("/{userId}/live")
     public ResponseEntity<LiveStreamResponse> getUsersLive(@PathVariable UUID userId) {
         StreamHash stream = cacheService.getLiveByUserId(userId);
-        LiveStreamResponse streamResponse = StreamMapper.mapToLiveStreamResponse(stream);
+        LiveStreamResponse streamResponse = streamMapper.mapToLiveStreamResponse(stream);
         return ResponseEntity.ok(streamResponse);
     }
 
@@ -122,18 +126,16 @@ public class StreamController {
                                                             @Valid @RequestBody StreamPutRequest request) {
 
         StreamHash stream = cacheService.updateIngressInfo(currentUser.getId(), request);
-        LiveStreamResponse streamResponse = StreamMapper.mapToLiveStreamResponse(stream);
+        LiveStreamResponse streamResponse = streamMapper.mapToLiveStreamResponse(stream);
         return ResponseEntity.ok(streamResponse);
     }
-
-
 
     @Operation(summary = "Updates chat details of stream")
     @PutMapping("/chat")
     public ResponseEntity<LiveStreamResponse> updateStream(@AuthenticationPrincipal CustomUserDetails currentUser,
                                                            @Valid @RequestBody StreamPatchRequest request) {
         var stream = cacheService.updateStreamInfo(currentUser.getId(), request);
-        LiveStreamResponse streamResponse = StreamMapper.mapToLiveStreamResponse(stream);
+        LiveStreamResponse streamResponse = streamMapper.mapToLiveStreamResponse(stream);
         return ResponseEntity.ok(streamResponse);
     }
 

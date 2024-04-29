@@ -1,7 +1,9 @@
 package com.demo.patronus.mapper;
 
+import com.demo.patronus.dto.response.LiveStreamResponse;
 import com.demo.patronus.dto.response.StreamResponse;
 import com.demo.patronus.models.LiveStream;
+import com.demo.patronus.models.redis.StreamHash;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.NullValuePropertyMappingStrategy;
@@ -20,6 +22,8 @@ public interface StreamMapper {
 
 
     List<StreamResponse> mapToStreamResponses(List<LiveStream> liveStreams);
+
+    LiveStreamResponse mapToLiveStreamResponse(StreamHash hash);
 
 //    public static StreamResponse mapToStreamResponse(LiveStream liveStream) {
 //        return new StreamResponse(
