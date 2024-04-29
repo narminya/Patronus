@@ -22,10 +22,10 @@ public class DatabaseInitializer implements CommandLineRunner {
   private final RoleRepository roleRepository;
     @Override
     public void run(String... args) {
-        if (!roleRepository.findAll().isEmpty()) {
-            return;
+        if (roleRepository.findAll().isEmpty()) {
+            roleRepository.saveAll(ROLES);
         }
-        roleRepository.saveAll(ROLES);
+
         log.info("Database initialized");
     }
 

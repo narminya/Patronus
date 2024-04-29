@@ -1,10 +1,7 @@
 package com.demo.patronus.models;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 
 import java.time.LocalDateTime;
@@ -16,6 +13,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "likes")
+@ToString(exclude = {"user"})
 public class Like {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

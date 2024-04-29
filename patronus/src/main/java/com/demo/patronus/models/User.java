@@ -29,19 +29,19 @@ import java.util.UUID;
         @UniqueConstraint(columnNames = "username"),
         @UniqueConstraint(columnNames = "email")
 })
+
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
     private String username;
     private String email;
-    @Column(name = "email_confirmed")
-    private boolean emailConfirmed=false;
     private String password;
     private String imageUrl;
     private String bio;
     private String name;
-
+    @Column(name = "email_confirmed")
+    private boolean emailConfirmed=false;
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(  name = "user_roles",
             joinColumns = @JoinColumn(name = "user_id"),
@@ -79,18 +79,5 @@ public class User {
 
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
-
-    @Override
-    public String toString() {
-        return "User{" +
-                "id=" + id +
-                ", username='" + username + '\'' +
-                ", imageUrl='" + imageUrl + '\'' +
-                ", bio='" + bio + '\'' +
-                ", email='" + email + '\'' +
-                '}';
-    }
-
-
 
 }

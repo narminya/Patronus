@@ -39,12 +39,12 @@ public class StreamController {
     private final LiveStreamService service;
     private final CacheService cacheService;
     private final UserService userService;
-
+    private final StreamMapper streamMapper;
     @Operation(summary = "Get all streams")
     @GetMapping("/all/pageable")
     public Page<StreamResponse> getStreams(@ParameterObject Pageable pageable) {
         Page<LiveStream> liveStreamPage = service.listAllStreamsByPage(pageable);
-        return liveStreamPage.map(StreamMapper::mapToStreamResponse);
+        return liveStreamPage.map(streamMapper::mapToStreamResponse);
     }
     @Operation(summary = "Get all streams")
     @GetMapping("/all/live")

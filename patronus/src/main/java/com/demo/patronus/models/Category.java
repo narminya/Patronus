@@ -23,7 +23,7 @@ public class Category {
     @Column(name = "id")
     private UUID id;
 
-    @Column(name = "category_name")
+    @Column(name = "category_name", nullable = false)
     private String name;
 
     @CreatedDate

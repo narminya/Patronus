@@ -32,7 +32,7 @@ public class LiveStream {
 
     @ManyToOne
     @JoinColumn(name = "user_id")
-    @JsonIgnore
+    @Ignore
     private User user;
 
     @CreatedDate
