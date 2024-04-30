@@ -1,16 +1,13 @@
 package com.demo.patronus.services.impl;
 
-import com.demo.patronus.exception.StreamNotFoundException;
+import com.demo.patronus.dto.request.StreamPatchRequest;
+import com.demo.patronus.dto.request.StreamPutRequest;
 import com.demo.patronus.models.LiveStream;
-import com.demo.patronus.repository.StreamRepository;
-import com.demo.patronus.services.CacheService;
+import com.demo.patronus.models.redis.StreamHash;
+import com.demo.patronus.repository.RedisRepository;
 import com.demo.patronus.services.LiveStreamService;
-import com.demo.patronus.services.StorageService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.UUID;
@@ -19,57 +16,75 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 public class LiveStreamServiceImpl implements LiveStreamService {
-    private final StreamRepository repository;
-    private final CacheService cacheService;
-    private final StorageService storageService;
-
+    private final RedisRepository redisRepository;
     @Override
-    public LiveStream save(LiveStream liveStream) {
-        return repository.save(liveStream);
+    public StreamHash save(LiveStream liveStream) {
+        var streamHash = StreamHash.builder()
+                .streamId(liveStream.getId())
+                .caption(liveStream.getCaption())
+                .description(liveStream.getDescription())
+                .userId(liveStream.getUser().getId())
+                .username(liveStream.getUser().getUsername())
+                .fullName(liveStream.getUser().getName())
+                .build();
+
+        redisRepository.findByUserId(liveStream.getUser().getId())
+                .ifPresent(redisRepository::delete);
+        redisRepository.save(streamHash);
+        return streamHash;
     }
 
-    public Page<LiveStream> getAllFiltered(UUID userId, Pageable pageable) {
-        return repository.findAll(userId, pageable);
-    }
 
     @Override
-    public void archiveStream(UUID streamId, UUID userId) {
-        repository.updateByStreamIdAndUserId(streamId, userId);
-    }
-
-    @Override
-    public Page<LiveStream> getStreams(UUID userId, Pageable pageable) {
-        return repository.findAllByUserId(userId, pageable);
-    }
-
-    @Override
-    public Page<LiveStream> listAllStreamsByPage(Pageable pageable) {
-        return repository.findAll(pageable);
-    }
-
-    @Override
-    public LiveStream getByStreamId(UUID streamId) {
-        return repository.findById(streamId)
-                .orElseThrow(() -> new StreamNotFoundException(streamId));
+    public StreamHash save(UUID id, StreamPutRequest liveStream) {
+        StreamHash stream = redisRepository.findById(id).orElseThrow();
+        stream.setStreamKey(liveStream.getStreamKey());
+        stream.setServerUrl(liveStream.getUrl());
+        stream.setIngressId(liveStream.getIngressId());
+        return redisRepository.save(stream);
     }
 
     @Override
-    public LiveStream endStream(UUID streamId) {
-        var live = repository.findById(streamId)
-                .orElseThrow(() -> new StreamNotFoundException(streamId));
-        live.setLive(false);
-        cacheService.removeStream(streamId);
-        return repository.save(live);
+    public List<StreamHash> getAllLiveStreams() {
+        return (List<StreamHash>)redisRepository.findAll();
+    }
+
+
+    @Override
+    public StreamHash updateStreamInfo(UUID id, StreamPatchRequest status) {
+        StreamHash stream = redisRepository.findByUserId(id).orElseThrow();
+        stream.setChatDelayed(status.getChatDelayed());
+        stream.setChatEnabled(status.getChatEnabled());
+        stream.setChatFollowersOnly(status.getChatFollowersOnly());
+        return redisRepository.save(stream);
     }
 
     @Override
-    public String uploadThumbnail(UUID streamId, MultipartFile poster) {
-        LiveStream stream = repository.findById(streamId).orElseThrow();
-        String uploadedFile = storageService.uploadFile(poster);
-        stream.setThumbnailUrl(uploadedFile);
-        repository.save(stream);
-        return uploadedFile;
+    public StreamHash updateIngressInfo(UUID id, StreamPutRequest status) {
+        StreamHash stream = redisRepository.findByUserId(id).orElseThrow();
+        stream.setIngressId(status.getIngressId());
+        stream.setStreamKey(status.getStreamKey());
+        stream.setServerUrl(status.getUrl());
+        return redisRepository.save(stream);
     }
+
+
+    @Override
+    public StreamHash getLiveByUserId(UUID userId) {
+        return redisRepository.findByUserId(userId).orElseThrow();
+    }
+
+    @Override
+    public void removeStream(UUID userId) {
+        var liveStream = redisRepository.findByUserId(userId)
+                .orElseThrow();
+        redisRepository.deleteById(liveStream.getStreamId());
+    }
+    @Override
+    public StreamHash getById(UUID streamId) {
+        return redisRepository.findById(streamId).orElseThrow();
+    }
+
 
 
 }

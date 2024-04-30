@@ -15,48 +15,8 @@ import java.util.List;
         nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE
 )
 public interface StreamMapper {
-
-
     @Mapping(source = "user", target = "user", qualifiedByName = "toUserResponse")
     StreamResponse mapToStreamResponse(LiveStream liveStream);
-
-
     List<StreamResponse> mapToStreamResponses(List<LiveStream> liveStreams);
-
     LiveStreamResponse mapToLiveStreamResponse(StreamHash hash);
-
-//    public static StreamResponse mapToStreamResponse(LiveStream liveStream) {
-//        return new StreamResponse(
-//                liveStream.getId().toString(),
-//                liveStream.getCaption(),
-//                liveStream.getThumbnailUrl(),
-//                new StreamResponse.UserResponse(liveStream.getUser().getUsername(), liveStream.getUser().getImageUrl()),
-//                liveStream.getCreatedAt(),
-//                liveStream.getLikeCount()
-//        );
-//    }
-//
-//    public static List<StreamResponse> mapToStreamResponses(List<LiveStream> liveStreams) {
-//        return liveStreams.stream()
-//                .map(StreamMapper::mapToStreamResponse)
-//                .collect(Collectors.toList());
-//    }
-//
-//    public static LiveStreamResponse mapToLiveStreamResponse(StreamHash hash) {
-//        return new LiveStreamResponse(
-//                hash.getStreamId().toString(),
-//                hash.getCaption(),
-//                hash.getIngressId(),
-//                hash.getServerUrl(),
-//                hash.getStreamKey(),
-//                hash.isChatDelayed(),
-//                hash.isChatEnabled(),
-//                hash.isChatFollowersOnly(),
-//                hash.getUserId().toString(),
-//                hash.getUsername(),
-//                hash.getFullName()
-//        );
-//    }
-
-
 }

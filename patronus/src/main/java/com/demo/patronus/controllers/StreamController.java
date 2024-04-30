@@ -10,8 +10,8 @@ import com.demo.patronus.models.LiveStream;
 import com.demo.patronus.models.User;
 import com.demo.patronus.models.redis.StreamHash;
 import com.demo.patronus.security.CustomUserDetails;
-import com.demo.patronus.services.CacheService;
 import com.demo.patronus.services.LiveStreamService;
+import com.demo.patronus.services.StreamService;
 import com.demo.patronus.services.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
@@ -36,8 +36,8 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class StreamController {
 
-    private final LiveStreamService service;
-    private final CacheService cacheService;
+    private final StreamService service;
+    private final LiveStreamService cacheService;
     private final UserService userService;
     private final StreamMapper streamMapper;
     @Operation(summary = "Get all streams")
@@ -116,7 +116,8 @@ public class StreamController {
     @Operation(summary = "Ends livestream for currently authenticated user")
     @PostMapping("/end")
     public ResponseEntity<LiveStream> save(@AuthenticationPrincipal CustomUserDetails currentUser) {
-//        cacheService.removeStream();
+        service.endStream(currentUser.getId());
+        cacheService.removeStream(currentUser.getId());
         return ResponseEntity.status(HttpStatus.CREATED).body(null);
     }
 

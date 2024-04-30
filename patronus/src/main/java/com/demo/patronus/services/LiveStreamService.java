@@ -1,6 +1,9 @@
 package com.demo.patronus.services;
 
+import com.demo.patronus.dto.request.StreamPatchRequest;
+import com.demo.patronus.dto.request.StreamPutRequest;
 import com.demo.patronus.models.LiveStream;
+import com.demo.patronus.models.redis.StreamHash;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
@@ -10,12 +13,12 @@ import java.util.UUID;
 
 public interface LiveStreamService {
 
-    LiveStream save(LiveStream liveStream);
-    Page<LiveStream> getStreams(UUID userId, Pageable pageable);
-    LiveStream getByStreamId( UUID streamId);
-    Page<LiveStream> getAllFiltered(UUID userId, Pageable pageable);
-    Page<LiveStream> listAllStreamsByPage(Pageable pageable);
-    void archiveStream(UUID streamId, UUID userId);
-    LiveStream endStream(UUID streamId);
-    String uploadThumbnail(UUID streamId, MultipartFile poster);
+    StreamHash save(LiveStream liveStream);
+    StreamHash save(UUID id, StreamPutRequest liveStream);
+    List<StreamHash> getAllLiveStreams();
+    StreamHash updateStreamInfo(UUID id, StreamPatchRequest status);
+    StreamHash updateIngressInfo(UUID id, StreamPutRequest status);
+    StreamHash getLiveByUserId(UUID userId);
+    void removeStream(UUID userId);
+    StreamHash getById(UUID streamId);
 }

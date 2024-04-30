@@ -2,10 +2,7 @@ package com.demo.patronus.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 
 import java.time.LocalDateTime;
@@ -18,6 +15,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "streams")
+@ToString(exclude = {"user", "likes"})
 public class LiveStream {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -32,11 +30,8 @@ public class LiveStream {
 
     @ManyToOne
     @JoinColumn(name = "user_id")
-    @Ignore
     private User user;
 
-    @CreatedDate
-    private LocalDateTime createdAt = LocalDateTime.now();
 
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
@@ -49,19 +44,9 @@ public class LiveStream {
     @JoinColumn(name = "category_id")
     private Category category;
 
+    @CreatedDate
+    private LocalDateTime createdAt = LocalDateTime.now();
     public int getLikeCount() {
         return likes != null ? likes.size() : 0;
     }
-
-    @Override
-    public String toString() {
-        return "LiveStream{" +
-                "id=" + id +
-                ", caption='" + caption + '\'' +
-                ", thumbnailUrl='" + thumbnailUrl + '\'' +
-                ", createdAt=" + createdAt +
-                '}';
-    }
-
-
 }

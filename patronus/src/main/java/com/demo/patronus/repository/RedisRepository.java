@@ -13,4 +13,5 @@ import java.util.UUID;
 public interface RedisRepository extends CrudRepository<StreamHash, UUID> {
     Optional<StreamHash> findByUserId(UUID userId);
     List<StreamHash> findAll(Pageable pageable);
+
 }
