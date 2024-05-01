@@ -3,7 +3,7 @@ package com.demo.patronus.services;
 
 import com.demo.patronus.exception.StreamNotFoundException;
 import com.demo.patronus.exception.UserNotFoundException;
-import com.demo.patronus.models.Like;
+import com.demo.patronus.models.jpa.Like;
 import com.demo.patronus.repository.LikeRepository;
 import com.demo.patronus.repository.StreamRepository;
 import com.demo.patronus.repository.UserRepository;

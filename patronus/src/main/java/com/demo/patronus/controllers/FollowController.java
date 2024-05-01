@@ -3,7 +3,7 @@ package com.demo.patronus.controllers;
 
 import com.demo.patronus.dto.response.FollowResponse;
 import com.demo.patronus.mapper.FollowMapper;
-import com.demo.patronus.models.Follow;
+import com.demo.patronus.models.jpa.Follow;
 import com.demo.patronus.security.CustomUserDetails;
 import com.demo.patronus.services.FollowService;
 import lombok.RequiredArgsConstructor;

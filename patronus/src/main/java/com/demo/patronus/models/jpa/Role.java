@@ -1,4 +1,4 @@
-package com.demo.patronus.models;
+package com.demo.patronus.models.jpa;
 
 
 import com.demo.patronus.enums.ERole;

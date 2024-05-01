@@ -1,10 +1,7 @@
-package com.demo.patronus.models;
+package com.demo.patronus.models.jpa;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 
 import java.time.LocalDateTime;
@@ -15,21 +12,22 @@ import java.util.UUID;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "categories")
-public class Category {
-
+@Table(name = "likes")
+@ToString(exclude = {"user"})
+public class Like {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "id")
     private UUID id;
 
-    @Column(name = "category_name", nullable = false)
-    private String name;
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
+
+    @ManyToOne
+    @JoinColumn(name = "stream_id")
+    private LiveStream stream;
 
     @CreatedDate
     private LocalDateTime createdAt;
-
-    @Column(name = "updated_at")
     private LocalDateTime updatedAt;
-
 }

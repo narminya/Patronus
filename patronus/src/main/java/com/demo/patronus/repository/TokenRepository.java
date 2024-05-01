@@ -1,9 +1,7 @@
 package com.demo.patronus.repository;
 
-import com.demo.patronus.models.RefreshToken;
-import com.demo.patronus.models.User;
+import com.demo.patronus.models.jpa.RefreshToken;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;

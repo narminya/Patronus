@@ -1,9 +1,8 @@
 package com.demo.patronus.services.impl;
 
 import com.demo.patronus.exception.StreamNotFoundException;
-import com.demo.patronus.models.LiveStream;
+import com.demo.patronus.models.jpa.LiveStream;
 import com.demo.patronus.repository.StreamRepository;
-import com.demo.patronus.services.LiveStreamService;
 import com.demo.patronus.services.StorageService;
 import com.demo.patronus.services.StreamService;
 import lombok.RequiredArgsConstructor;

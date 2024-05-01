@@ -1,4 +1,4 @@
-package com.demo.patronus.models;
+package com.demo.patronus.models.jpa;
 
 import jakarta.persistence.*;
 import lombok.*;
@@ -12,22 +12,27 @@ import java.util.UUID;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "likes")
-@ToString(exclude = {"user"})
-public class Like {
+@ToString(exclude = {"blocker","blocked"})
+public class Block {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "id")
     private UUID id;
 
     @ManyToOne
-    @JoinColumn(name = "user_id")
-    private User user;
+    @JoinColumn(name = "blocker_user_id")
+    private User blocker;
 
     @ManyToOne
-    @JoinColumn(name = "stream_id")
-    private LiveStream stream;
+    @JoinColumn(name = "blocked_user_id")
+    private User blocked;
+
 
     @CreatedDate
     private LocalDateTime createdAt;
+
+    @Column(name = "updated_at")
     private LocalDateTime updatedAt;
+
+
 }

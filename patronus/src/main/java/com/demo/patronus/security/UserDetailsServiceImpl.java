@@ -1,17 +1,13 @@
 package com.demo.patronus.security;
 
-import com.demo.patronus.models.User;
+import com.demo.patronus.models.jpa.User;
 import com.demo.patronus.services.UserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service

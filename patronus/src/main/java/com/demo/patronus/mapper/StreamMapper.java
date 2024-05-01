@@ -2,7 +2,7 @@ package com.demo.patronus.mapper;
 
 import com.demo.patronus.dto.response.LiveStreamResponse;
 import com.demo.patronus.dto.response.StreamResponse;
-import com.demo.patronus.models.LiveStream;
+import com.demo.patronus.models.jpa.LiveStream;
 import com.demo.patronus.models.redis.StreamHash;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

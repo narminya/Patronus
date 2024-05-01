@@ -1,6 +1,6 @@
 package com.demo.patronus.services;
 
-import com.demo.patronus.models.Block;
+import com.demo.patronus.models.jpa.Block;
 
 import java.util.List;
 import java.util.UUID;

@@ -3,7 +3,7 @@ package com.demo.patronus.services;
 import com.demo.patronus.dto.request.AuthRequest;
 import com.demo.patronus.dto.request.RegisterRequest;
 import com.demo.patronus.dto.response.AuthResponse;
-import com.demo.patronus.models.User;
+import com.demo.patronus.models.jpa.User;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 

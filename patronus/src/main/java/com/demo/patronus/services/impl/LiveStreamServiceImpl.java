@@ -2,7 +2,7 @@ package com.demo.patronus.services.impl;
 
 import com.demo.patronus.dto.request.StreamPatchRequest;
 import com.demo.patronus.dto.request.StreamPutRequest;
-import com.demo.patronus.models.LiveStream;
+import com.demo.patronus.models.jpa.LiveStream;
 import com.demo.patronus.models.redis.StreamHash;
 import com.demo.patronus.repository.RedisRepository;
 import com.demo.patronus.services.LiveStreamService;

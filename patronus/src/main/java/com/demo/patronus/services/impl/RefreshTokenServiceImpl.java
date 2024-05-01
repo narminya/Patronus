@@ -2,7 +2,7 @@ package com.demo.patronus.services.impl;
 
 import com.demo.patronus.exception.TokenNotFoundException;
 import com.demo.patronus.exception.TokenRefreshException;
-import com.demo.patronus.models.RefreshToken;
+import com.demo.patronus.models.jpa.RefreshToken;
 import com.demo.patronus.repository.TokenRepository;
 import com.demo.patronus.services.RefreshTokenService;
 import lombok.RequiredArgsConstructor;
@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.Instant;
 import java.util.Optional;
-import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor

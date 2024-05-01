@@ -1,6 +1,6 @@
 package com.demo.patronus.services;
 
-import com.demo.patronus.models.Follow;
+import com.demo.patronus.models.jpa.Follow;
 
 import java.util.List;
 import java.util.UUID;

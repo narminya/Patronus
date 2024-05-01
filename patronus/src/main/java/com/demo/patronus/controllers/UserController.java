@@ -1,12 +1,8 @@
 package com.demo.patronus.controllers;
 
 
-import com.demo.patronus.dto.response.FollowResponse;
 import com.demo.patronus.dto.response.UserResponse;
-import com.demo.patronus.mapper.FollowMapper;
-import com.demo.patronus.models.Block;
-import com.demo.patronus.models.Follow;
-import com.demo.patronus.models.User;
+import com.demo.patronus.models.jpa.User;
 import com.demo.patronus.security.CustomUserDetails;
 import com.demo.patronus.services.UserService;
 import lombok.RequiredArgsConstructor;
@@ -15,7 +11,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.UUID;
 
 @RestController

@@ -1,6 +1,6 @@
 package com.demo.patronus.repository;
 
-import com.demo.patronus.models.Follow;
+import com.demo.patronus.models.jpa.Follow;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

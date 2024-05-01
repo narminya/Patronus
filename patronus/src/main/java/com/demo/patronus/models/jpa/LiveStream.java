@@ -1,6 +1,5 @@
-package com.demo.patronus.models;
+package com.demo.patronus.models.jpa;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;

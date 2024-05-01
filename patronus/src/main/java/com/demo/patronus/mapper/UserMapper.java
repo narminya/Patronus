@@ -3,7 +3,7 @@ package com.demo.patronus.mapper;
 import com.demo.patronus.dto.request.RegisterRequest;
 import com.demo.patronus.dto.request.UpdateUserRequest;
 import com.demo.patronus.dto.response.UserResponse;
-import com.demo.patronus.models.User;
+import com.demo.patronus.models.jpa.User;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;

@@ -1,12 +1,8 @@
-package com.demo.patronus.models;
+package com.demo.patronus.models.jpa;
 
-import com.demo.patronus.annotation.Password;
 import com.demo.patronus.security.oauth.OAuth2Provider;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

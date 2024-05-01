@@ -1,14 +1,12 @@
 package com.demo.patronus.runner;
 
 import com.demo.patronus.enums.ERole;
-import com.demo.patronus.models.Role;
-import com.demo.patronus.models.User;
+import com.demo.patronus.models.jpa.Role;
+import com.demo.patronus.models.jpa.User;
 import com.demo.patronus.repository.RoleRepository;
-import com.demo.patronus.services.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.util.Arrays;

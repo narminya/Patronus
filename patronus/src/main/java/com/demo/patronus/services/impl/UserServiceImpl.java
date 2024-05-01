@@ -1,17 +1,12 @@
 package com.demo.patronus.services.impl;
 
 import com.demo.patronus.exception.UserNotFoundException;
-import com.demo.patronus.models.Block;
-import com.demo.patronus.models.Follow;
-import com.demo.patronus.models.User;
-import com.demo.patronus.repository.BlockRepository;
-import com.demo.patronus.repository.FollowRepository;
+import com.demo.patronus.models.jpa.User;
 import com.demo.patronus.repository.UserRepository;
 import com.demo.patronus.services.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.UUID;
 
 @Service

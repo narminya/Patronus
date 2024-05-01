@@ -1,8 +1,8 @@
 package com.demo.patronus.services.impl;
 
 import com.demo.patronus.exception.UserNotFoundException;
-import com.demo.patronus.models.Block;
-import com.demo.patronus.models.User;
+import com.demo.patronus.models.jpa.Block;
+import com.demo.patronus.models.jpa.User;
 import com.demo.patronus.repository.BlockRepository;
 import com.demo.patronus.repository.UserRepository;
 import com.demo.patronus.services.BlockService;

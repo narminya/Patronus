@@ -1,7 +1,7 @@
 package com.demo.patronus.mapper;
 
 import com.demo.patronus.dto.response.FollowResponse;
-import com.demo.patronus.models.Follow;
+import com.demo.patronus.models.jpa.Follow;
 
 import java.util.List;
 import java.util.stream.Collectors;

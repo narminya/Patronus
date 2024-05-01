@@ -1,6 +1,6 @@
 package com.demo.patronus.controllers;
 
-import com.demo.patronus.models.Block;
+import com.demo.patronus.models.jpa.Block;
 import com.demo.patronus.security.CustomUserDetails;
 import com.demo.patronus.services.BlockService;
 import lombok.RequiredArgsConstructor;

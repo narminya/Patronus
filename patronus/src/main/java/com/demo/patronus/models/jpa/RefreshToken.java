@@ -1,4 +1,4 @@
-package com.demo.patronus.models;
+package com.demo.patronus.models.jpa;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

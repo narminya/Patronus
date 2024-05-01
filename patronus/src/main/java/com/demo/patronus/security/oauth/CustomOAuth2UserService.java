@@ -1,8 +1,8 @@
 package com.demo.patronus.security.oauth;
 
 import com.demo.patronus.enums.ERole;
-import com.demo.patronus.models.Role;
-import com.demo.patronus.models.User;
+import com.demo.patronus.models.jpa.Role;
+import com.demo.patronus.models.jpa.User;
 import com.demo.patronus.repository.RoleRepository;
 import com.demo.patronus.repository.UserRepository;
 import com.demo.patronus.security.CustomUserDetails;

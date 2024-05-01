@@ -1,4 +1,4 @@
-package com.demo.patronus.models;
+package com.demo.patronus.models.jpa;
 
 import jakarta.persistence.*;
 import lombok.*;
@@ -12,21 +12,21 @@ import java.util.UUID;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString(exclude = {"blocker","blocked"})
-public class Block {
+@Table(name = "follows")
+@ToString(exclude = {"follower","following"})
+public class Follow {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id")
     private UUID id;
 
     @ManyToOne
-    @JoinColumn(name = "blocker_user_id")
-    private User blocker;
+    @JoinColumn(name = "follower_id")
+    private User follower;
 
     @ManyToOne
-    @JoinColumn(name = "blocked_user_id")
-    private User blocked;
-
+    @JoinColumn(name = "following_id")
+    private User following;
 
     @CreatedDate
     private LocalDateTime createdAt;

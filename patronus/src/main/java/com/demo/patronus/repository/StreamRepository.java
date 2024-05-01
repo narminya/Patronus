@@ -1,6 +1,6 @@
 package com.demo.patronus.repository;
 
-import com.demo.patronus.models.LiveStream;
+import com.demo.patronus.models.jpa.LiveStream;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
