@@ -21,21 +21,7 @@ public class AwsProperties {
     private String region;
 
     @NotNull
-    private OpenSearch opensearch;
-
-    @NotNull
     private S3 s3;
-
-    @Data
-    @Valid
-    public static class OpenSearch {
-
-        @NotBlank
-        private String domain;
-
-        @NotBlank
-        private String indexes;
-    }
 
     @Data
     @Valid

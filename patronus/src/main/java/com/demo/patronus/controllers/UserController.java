@@ -39,7 +39,7 @@ private final UserService userService;
 
     @GetMapping("/{username}")
     public ResponseEntity<UserResponse> getUser(@PathVariable String username) {
-        User user = userService.getUserByUsername(username);
+        User user = userService.getUser(username);
 
         UserResponse response = UserResponse.builder()
                 .id(user.getId())
